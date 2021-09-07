@@ -1,6 +1,6 @@
 import {Form, Input, Button, Checkbox} from 'antd';
 import {UserOutlined, LockOutlined} from '@ant-design/icons';
-import LoginPage from "../components/Page";
+import LoginPage from "../components/LoginPage";
 import './Login.css';
 
 export default function Login() {
@@ -52,6 +52,7 @@ export default function Login() {
                     />
                 </Form.Item>
                 <Form.Item>
+
                     <Form.Item name="remember" valuePropName="checked" noStyle>
                         <Checkbox>Remember me</Checkbox>
                     </Form.Item>
@@ -62,7 +63,7 @@ export default function Login() {
                 </Form.Item>
 
                 <Form.Item>
-                    <Button type="primary" htmlType="submit" className="login-form-button">
+                    <Button type="secondary" htmlType="submit" className="login-form-button">
                         Log in
                     </Button>
                     Or <a href="/">register now!</a>
