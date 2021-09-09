@@ -1,0 +1,21 @@
+spring:
+    profiles:
+        active: spring.profiles.active@
+    application:
+        name: HighscoreDarts
+    datasource:
+        url: jdbc:${profile.datasource.url}
+        username: ${profile.datasource.user}
+        password: ${profile.datasource.pass}
+        driver-class-name: org.postgresql.Driver
+    jpa:
+        generate-ddl: true
+        open-in-view: false
+        show-sql: false
+        properties:
+            hibernate:
+                format_sql: false
+
+server:
+    servlet:
+        context-path: "/api/${spring.application.name}"

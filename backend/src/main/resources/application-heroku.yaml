@@ -1,0 +1,9 @@
+profile:
+  datasource:
+    url: ${DATABASE_JDBC}
+    user: ${DATABASE_USER}
+    pass: ${DATABASE_PASS}
+
+rem213:
+  github-client:
+    access-token: ${GITHUB_TOKEN}

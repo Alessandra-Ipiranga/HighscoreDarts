@@ -10,7 +10,7 @@ export default function Login() {
         <LoginPage>
             <Form>
                 <Header/>
-                <Input type="email" name="email" id="exampleEmail" placeholder="Email"/>
+                <Input type="text" name="username" id="userId" placeholder="Username"/>
                 <Input type="password" name="password" id="examplePassword" placeholder="Password"/>
                 <Button>Login</Button>
             </Form>
