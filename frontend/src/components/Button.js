@@ -3,6 +3,7 @@ import styled from 'styled-components/macro'
 export default styled.button`
   background-color: #fac800;
   border-color: #fac800;
+  border-radius: 5px;
   border-style: none;
   color: #fff;
   padding: 20px;
