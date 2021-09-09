@@ -16,8 +16,8 @@ public class UserEntity {
     @GeneratedValue
     @Column(name = "id", nullable = false)
     private Long id;
-    @Column(name = "userName", nullable = false, unique = true)
+    @Column(name = "user_name", nullable = false, unique = true)
     private String name;
-    @Column(name = "userPassword", nullable = false)
+    @Column(name = "user_password", nullable = false)
     private String password;
 }
