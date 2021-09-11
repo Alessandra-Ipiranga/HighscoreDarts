@@ -1,12 +1,13 @@
 import './App.css';
-import Login from "./pages/Login";
+import NewTournamentPage from "./pages/NewTournamentPage";
+import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 
 export default function App() {
     return (
-        <div>
-            <Login>
-
-            </Login>
-        </div>
+        <Router>
+            <Switch>
+                <Route path="/newtournament" component={NewTournamentPage}/>
+            </Switch>
+        </Router>
     );
 }
