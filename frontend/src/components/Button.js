@@ -6,6 +6,8 @@ export default styled.button`
   border-radius: 5px;
   border-style: none;
   color: #fff;
+  
+  font-size: 16px;
   padding: 20px;
   margin-top: 20px;
   :focus-visible {
