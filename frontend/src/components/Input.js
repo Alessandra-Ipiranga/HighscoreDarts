@@ -2,7 +2,8 @@ import styled from 'styled-components/macro'
 
 export default styled.input`
   color: #808080;
-  font-size: 18px;
+  font-size: 20px;
+  font-weight: 800;
   height: 50px;
   margin: 20px 0 20px 0;
   padding-left: 20px;

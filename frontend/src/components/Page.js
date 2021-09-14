@@ -7,6 +7,7 @@ export default styled.div`
   width: 100%;
   height: 100%;
   background: var(--background-light);
+  background-color: grey;
   color: var(--neutral-light);
   display: flex;
   place-items: center;
