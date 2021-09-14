@@ -13,7 +13,7 @@ const Wrapper = styled.header`
   background-color: #3c3c3c;
   display: flex;
   justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
 `
 
 const Logo = styled.img `

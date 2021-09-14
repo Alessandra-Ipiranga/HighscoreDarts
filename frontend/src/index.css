@@ -5,3 +5,13 @@
 html, body {
   margin: 0;
 }
+
+a{
+  text-decoration: none;
+  color: #fff;
+}
+
+a:hover {
+  color: #000;
+  transition: 2s;
+}
