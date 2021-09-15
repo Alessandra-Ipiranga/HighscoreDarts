@@ -14,7 +14,7 @@ const initialState = {
     round: "",
 }
 
-export default function NewTournamentPage() {
+export default function TournamentPage() {
 
     const [number, setNumber] = useState(initialState)
 
@@ -23,7 +23,12 @@ export default function NewTournamentPage() {
 
     const clear = (event) => {
         event.preventDefault()
-        setNumber(initialState)}
+        setNumber(initialState)
+    }
+
+    const render = (event) => {
+        event.preventDefault()
+    }
 
     return (
         <Page>
@@ -47,7 +52,8 @@ export default function NewTournamentPage() {
                 />
                 <ButtonGroup>
                     {((number.group <= 20 && number.group > 0) && (number.round <= 20 && number.round > 0)) ?
-                    <Button><Link to={`/groups/${number.group}`}>Neues Turnier beginnen</Link></Button> : <p>Bitte alle Felder ausfüllen!</p>}
+                    <Button onClick={render}><Link to={`/groups/${number.group}`}>Turnier erzeugen</Link>
+                    </Button> : <p>Bitte alle Felder ausfüllen!</p>}
                     {(((number.group < 0 || number.group > 20) || (number.round < 0 || number.round > 20))) &&
                     <WarningTag>Zahl nicht zulässig! <br/> Bitte überprüfen Sie Ihre Eingabe!</WarningTag>}
                     <Button type="button" onClick = {clear}>Clear</Button>

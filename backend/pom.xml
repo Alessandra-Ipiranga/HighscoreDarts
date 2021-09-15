@@ -10,11 +10,11 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>de.neuefische.rem-21-3-github</groupId>
-    <artifactId>rem_213_github</artifactId>
+    <groupId>com.alessandraipiranga.highscoredarts</groupId>
+    <artifactId>Highscore_Darts</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>rem_213_github</name>
-    <description>rem_213_github</description>
+    <name>Highscore_Darts</name>
+    <description>Highscore_Darts</description>
 
     <properties>
         <java.version>16</java.version>
