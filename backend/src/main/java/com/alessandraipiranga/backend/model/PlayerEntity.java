@@ -18,8 +18,10 @@ public class PlayerEntity {
 
     @Id
     @GeneratedValue
-    @Column(name = "player_name", nullable = false, unique = true)
+    @Column(name = "id", nullable = false)
+    private Long id;
+    @Column(name = "playerName", nullable = false, unique = true)
     private String name;
-    @Column(name = "player_result", nullable = false)
+    @Column(name = "playerResult", nullable = false)
     private int number;
 }

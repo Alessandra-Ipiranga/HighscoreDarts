@@ -34,21 +34,19 @@ export default function TournamentPage() {
         <Page>
             <Form>
                 <Header/>
-                <Label>Bitte geben Sie die Anzahl der Gruppen ein! ( von 1 bis 20 ) </Label>
+                <Label>Bitte geben Sie die Anzahl der Gruppen ein! </Label>
                 <Input
                     type="number"
                     name="group"
                     value={number.group}
                     onChange={handleNumberChange}
-                    min="1" max="20"
                 />
-                <Label>Bitte geben Sie die Anzahl der Runden ein! ( von 1 bis 20 ) </Label>
+                <Label>Bitte geben Sie die Anzahl der Runden ein! </Label>
                 <Input
                     type="number"
                     name="round"
                     value={number.round}
                     onChange={handleNumberChange}
-                    min="1" max="20"
                 />
                 <ButtonGroup>
                     {((number.group <= 20 && number.group > 0) && (number.round <= 20 && number.round > 0)) ?
