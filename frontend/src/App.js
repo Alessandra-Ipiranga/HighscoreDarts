@@ -19,7 +19,6 @@ export default function App() {
 
     useEffect(() => {
         getPlayer()
-            .then(player => setPlayer(player))
             .catch(error => console.log(error))
     }, [])
 
