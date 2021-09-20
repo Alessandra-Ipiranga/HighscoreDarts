@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
-import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
+import static javax.servlet.http.HttpServletResponse.*;
 import static org.springframework.http.ResponseEntity.notFound;
 import static org.springframework.http.ResponseEntity.ok;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
@@ -23,7 +23,7 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @Api(
         tags = PlayerController.USER_CONTROLLER_TAG
 )
-@RequestMapping("/user")
+@RequestMapping("/dart")
 @RestController
 public class PlayerController {
 
@@ -36,9 +36,10 @@ public class PlayerController {
     }
 
 
-    @GetMapping(value = "{name}", produces = APPLICATION_JSON_VALUE)
+    @GetMapping(produces = APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
-            @ApiResponse(code = SC_NOT_FOUND, message = "User not found")
+            @ApiResponse(code = SC_BAD_REQUEST, message = "Unable to create User with blank name"),
+            @ApiResponse(code = SC_CONFLICT, message = "Unable to create User, user already exists")
     })
     public ResponseEntity<Player> find(@PathVariable String name) {
         Optional<PlayerEntity> userEntityOptional = playerService.find(name);
@@ -54,6 +55,26 @@ public class PlayerController {
         return Player.builder()
                 .name(playerEntity.getName())
                 .build();
+    }
+
+    @PostMapping(value = "/{name}")
+    @ApiResponses(value = {
+            @ApiResponse(code = SC_BAD_REQUEST, message = "Unable to create User with blank name"),
+            @ApiResponse(code = SC_CONFLICT, message = "Unable to create User, user already exists")
+    })
+    public ResponseEntity<Player> create(@PathVariable String name, @RequestBody String player) {
+        PlayerEntity playerEntity = PlayerEntity.builder().name(name).build();
+        PlayerEntity createdUserEntity = playerService.create(playerEntity);
+
+        Player createdPlayer = map(createdUserEntity);
+
+        return ok(createdPlayer);
+    }
+
+    private PlayerEntity map(Player player) {
+        PlayerEntity playerEntity = new PlayerEntity();
+        playerEntity.setName(player.getName());
+        return playerEntity;
     }
 
 }
