@@ -3,15 +3,15 @@ import Input from "../components/Input";
 import Form from "../components/Form";
 import Button from "../components/Button";
 import {useState} from "react";
-import axios from "axios";
+import {postPlayer} from "../service/api-service";
+import Header from "../components/Header";
 
-export default function PlayersPage(props) {
+export default function PlayersPage() {
 
     const [name, setName] = useState('')
 
     const nameHandler = event => {
         setName(event.target.value)
-
     }
 
     const handleSubmit = (event) => {
@@ -19,7 +19,7 @@ export default function PlayersPage(props) {
     }
 
     const handleClick = () => {
-        axios.post(`api/HighscoreDarts/dart/${name}`, "string")
+        postPlayer(name)
             .then(() => setName(""))
             .catch(error => console.log(error))
     }
@@ -27,6 +27,7 @@ export default function PlayersPage(props) {
     return (
         <Page>
             <Form onSubmit={handleSubmit}>
+            <Header/>
                 <Input
                     type="text"
                     name="group"
@@ -35,6 +36,7 @@ export default function PlayersPage(props) {
                     onChange={nameHandler}
                 />
                 <Button type="button" onClick={handleClick}>Add</Button>
+                <p>{name}</p>
             </Form>
         </Page>
     )
