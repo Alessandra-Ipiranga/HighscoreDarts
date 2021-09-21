@@ -8,13 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityExistsException;
+import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.util.StringUtils.hasText;
 
 @Service
-@Getter
-@Setter
 public class PlayerService {
 
     private final PlayerRepository playerRepository;
@@ -26,6 +25,10 @@ public class PlayerService {
 
     public Optional<PlayerEntity> find(String name) {
         return playerRepository.findByName(name);
+    }
+
+    public List<PlayerEntity> getAllPlayers(){
+        return playerRepository.findAll();
     }
 
     public PlayerEntity create(PlayerEntity playerEntity) {

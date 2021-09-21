@@ -1,17 +1,10 @@
 import './App.css';
-import TournamentPage from "./pages/TournamentPage";
 import GroupsPage from "./pages/GroupsPage";
 import PlayersPage from "./pages/PlayersPage";
+import TournamentPage from "./pages/TournamentPage";
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
-import {useEffect} from "react";
-import {getPlayer} from "./service/api-service";
 
 export default function App() {
-
-    useEffect(() => {
-        getPlayer()
-            .catch(error => console.log(error))
-    }, [])
 
     return (
         <Router>

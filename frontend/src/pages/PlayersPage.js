@@ -1,10 +1,10 @@
-import Page from "../components/Page"
-import Input from "../components/Input";
-import Form from "../components/Form";
 import Button from "../components/Button";
-import {useState} from "react";
-import {postPlayer} from "../service/api-service";
+import Form from "../components/Form";
 import Header from "../components/Header";
+import Input from "../components/Input";
+import Page from "../components/Page"
+import {postPlayer} from "../service/api-service";
+import {useState} from "react";
 
 export default function PlayersPage() {
 
@@ -26,8 +26,9 @@ export default function PlayersPage() {
 
     return (
         <Page>
-            <Form onSubmit={handleSubmit}>
+            <div>
             <Header/>
+            <Form onSubmit={handleSubmit}>
                 <Input
                     type="text"
                     name="group"
@@ -36,8 +37,8 @@ export default function PlayersPage() {
                     onChange={nameHandler}
                 />
                 <Button type="button" onClick={handleClick}>Add</Button>
-                <p>{name}</p>
             </Form>
+            </div>
         </Page>
     )
 }
