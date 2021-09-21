@@ -1,10 +1,11 @@
 import './App.css';
-import TournamentPage from "./pages/TournamentPage";
 import GroupsPage from "./pages/GroupsPage";
 import PlayersPage from "./pages/PlayersPage";
+import TournamentPage from "./pages/TournamentPage";
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 
-export default function App(...props) {
+export default function App() {
+
     return (
         <Router>
             <Switch>

@@ -8,13 +8,9 @@ import lombok.Data;
 @Data
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class User {
+public class Player {
 
     @ApiModelProperty(required = true, example = "Max Muster", notes = "The name of the user")
     private String name;
-
-    private String role;
-
-    private String password;
 
 }

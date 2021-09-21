@@ -1,13 +1,13 @@
-import Page from "../components/Page";
-import Header from "../components/Header";
-import Form from "../components/Form"
-import Input from "../components/Input"
 import Button from "../components/Button"
 import ButtonGroup from "../components/ButtonGroup"
-import {useState} from "react";
-import {Link} from "react-router-dom";
-import WarningTag from "../components/WarningTag";
+import Form from "../components/Form"
+import Header from "../components/Header";
+import Input from "../components/Input"
 import Label from "../components/Label";
+import Page from "../components/Page";
+import WarningTag from "../components/WarningTag";
+import {Link} from "react-router-dom";
+import {useState} from "react";
 
 const initialState = {
     group: "",
@@ -32,33 +32,33 @@ export default function TournamentPage() {
 
     return (
         <Page>
-            <Form>
+            <div>
                 <Header/>
-                <Label>Bitte geben Sie die Anzahl der Gruppen ein! ( von 1 bis 20 ) </Label>
-                <Input
-                    type="number"
-                    name="group"
-                    value={number.group}
-                    onChange={handleNumberChange}
-                    min="1" max="20"
-                />
-                <Label>Bitte geben Sie die Anzahl der Runden ein! ( von 1 bis 20 ) </Label>
-                <Input
-                    type="number"
-                    name="round"
-                    value={number.round}
-                    onChange={handleNumberChange}
-                    min="1" max="20"
-                />
-                <ButtonGroup>
-                    {((number.group <= 20 && number.group > 0) && (number.round <= 20 && number.round > 0)) ?
-                    <Button onClick={render}><Link to={`/groups/${number.group}`}>Turnier erzeugen</Link>
-                    </Button> : <p>Bitte alle Felder ausfüllen!</p>}
-                    {(((number.group < 0 || number.group > 20) || (number.round < 0 || number.round > 20))) &&
-                    <WarningTag>Zahl nicht zulässig! <br/> Bitte überprüfen Sie Ihre Eingabe!</WarningTag>}
-                    <Button type="button" onClick = {clear}>Clear</Button>
-                </ButtonGroup>
-            </Form>
+                <Form>
+                    <Label>Bitte geben Sie die Anzahl der Gruppen ein! </Label>
+                    <Input
+                        type="number"
+                        name="group"
+                        value={number.group}
+                        onChange={handleNumberChange}
+                    />
+                    <Label>Bitte geben Sie die Anzahl der Runden ein! </Label>
+                    <Input
+                        type="number"
+                        name="round"
+                        value={number.round}
+                        onChange={handleNumberChange}
+                    />
+                    <ButtonGroup>
+                        {((number.group <= 20 && number.group > 0) && (number.round <= 20 && number.round > 0)) ?
+                            <Button onClick={render}><Link to={`/groups/${number.group}`}>Turnier erzeugen</Link>
+                            </Button> : <p>Bitte alle Felder ausfüllen!</p>}
+                        {(((number.group < 0 || number.group > 20) || (number.round < 0 || number.round > 20))) &&
+                        <WarningTag>Zahl nicht zulässig! <br/> Bitte überprüfen Sie Ihre Eingabe!</WarningTag>}
+                        <Button type="button" onClick={clear}>Clear</Button>
+                    </ButtonGroup>
+                </Form>
+            </div>
         </Page>
     );
 }
