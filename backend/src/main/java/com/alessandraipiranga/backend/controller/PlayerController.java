@@ -51,9 +51,9 @@ public class PlayerController {
     }
 
     private Player map(PlayerEntity playerEntity) {
-        return Player.builder()
-                .name(playerEntity.getName())
-                .build();
+        Player player = new Player();
+        player.setName(playerEntity.getName());
+        return  player;
     }
 
     @PostMapping
@@ -61,8 +61,11 @@ public class PlayerController {
             @ApiResponse(code = SC_BAD_REQUEST, message = "Unable to create User with blank name"),
             @ApiResponse(code = SC_CONFLICT, message = "Unable to create User, user already exists")
     })
-    public ResponseEntity<Player> create(@RequestBody String name) {
-        PlayerEntity playerEntity = PlayerEntity.builder().name(name).build();
+    public ResponseEntity<Player> create(@RequestBody Player player) {
+        PlayerEntity playerEntity = PlayerEntity.builder()
+                .name(player.getName())
+                .build();
+
         PlayerEntity createdUserEntity = playerService.create(playerEntity);
 
         Player createdPlayer = map(createdUserEntity);

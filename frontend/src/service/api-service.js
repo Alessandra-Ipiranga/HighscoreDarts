@@ -3,5 +3,5 @@ import axios from "axios";
 export const getPlayer = () =>
     axios.get("/").then(response => response.data)
 
-export const postPlayer = (name) =>
-    axios.post(`api/HighscoreDarts/dart`,  name)
+export const postPlayer = (player) =>
+    axios.post(`api/HighscoreDarts/dart`, player)
