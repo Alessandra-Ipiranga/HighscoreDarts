@@ -26,10 +26,10 @@ public class TournamentEntity {
     @JoinColumn(name = "tournament_id")
     private final Set<GroupEntity> groups = new HashSet<>();
 
+    @Enumerated(EnumType.STRING)
     @Column(name= "tournament_status", nullable = false)
     private TournamentStatus status;
 
     @Column(name= "tournament_rounds", nullable = false)
     private int rounds;
-
 }

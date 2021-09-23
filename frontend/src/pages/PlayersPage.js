@@ -26,8 +26,8 @@ export default function PlayersPage() {
 
     const handleClick = () => {
         postPlayer({name})
-            .then(() => setName(""))
             .catch(error => console.log(error))
+            .finally(() => setName(""))
     }
 
     return (
