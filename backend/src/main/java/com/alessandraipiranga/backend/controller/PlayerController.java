@@ -14,9 +14,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static javax.servlet.http.HttpServletResponse.*;
+import static org.springframework.http.ResponseEntity.notFound;
 import static org.springframework.http.ResponseEntity.ok;
+import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @Tag(name = PlayerController.USER_CONTROLLER_TAG, description = "Provides CRUD operations for an Player")
 @Api(tags = PlayerController.USER_CONTROLLER_TAG)
@@ -78,6 +81,21 @@ public class PlayerController {
     private Player map(PlayerEntity playerEntity) {
         Player player = new Player();
         player.setName(playerEntity.getName());
-        return  player;
+        return player;
+    }
+
+    @DeleteMapping(value = "{name}", produces = APPLICATION_JSON_VALUE)
+    @ApiResponses(value = {
+            @ApiResponse(code = SC_NOT_FOUND, message = "User not found")
+    })
+    public ResponseEntity<Player> delete(@PathVariable String name) {
+
+        Optional<PlayerEntity> userEntityOptional = playerService.delete(name);
+        if (userEntityOptional.isPresent()) {
+            PlayerEntity playerEntity = userEntityOptional.get();
+            Player player = map(playerEntity);
+            return ok(player);
+        }
+        return notFound().build();
     }
 }

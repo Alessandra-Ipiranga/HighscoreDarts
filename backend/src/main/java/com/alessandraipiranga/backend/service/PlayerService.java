@@ -54,4 +54,13 @@ public class PlayerService {
     public List<PlayerEntity> findAllPlayer() {
         return playerRepository.findAll();
     }
+
+    public Optional<PlayerEntity> delete(String name) {
+        Optional<PlayerEntity> playerEntityOptional = find(name);
+        if (playerEntityOptional.isPresent()) {
+            PlayerEntity userEntity = playerEntityOptional.get();
+            playerRepository.delete(userEntity);
+        }
+        return playerEntityOptional;
+    }
 }

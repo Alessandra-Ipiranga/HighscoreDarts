@@ -11,4 +11,5 @@ public class Player {
     @ApiModelProperty(required = true, example = "Max Muster", notes = "The name of the user")
     private String name;
 
+    private Long id;
 }
