@@ -14,12 +14,9 @@ export default function PlayersListPage() {
             .then(setPlayer)
     }, [])
 
-    useEffect(() => {
-        deletePlayer(player)
-    }, [])
-
     const handleClick = (player) => {
         deletePlayer(player)
+        getAllPlayer()
     }
 
     const playersList = player.map(player =>
