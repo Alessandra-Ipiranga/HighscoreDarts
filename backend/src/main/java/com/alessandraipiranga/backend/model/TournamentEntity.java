@@ -1,26 +1,23 @@
 package com.alessandraipiranga.backend.model;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
 @Entity
+@Getter
+@Setter
 @Table(name = "hs_tournament")
-@Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
 public class TournamentEntity {
 
     @Id
     @Column(name = "tournament_id", nullable = false, unique = true)
-    private String name;
+    private String id;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "tournament_id")
@@ -32,4 +29,8 @@ public class TournamentEntity {
 
     @Column(name= "tournament_rounds", nullable = false)
     private int rounds;
+
+    public void addGroup(GroupEntity groupEntity){
+        groups.add(groupEntity);
+    }
 }

@@ -2,7 +2,7 @@ import Header from "../components/Header";
 import List from "../components/List";
 import Page from "../components/Page";
 import Ul from "../components/Ul";
-import {deletePlayer, getAllPlayer} from "../service/api-service";
+import {deletePlayer, getAllPlayer, putPlayer} from "../service/api-service";
 import {useEffect, useState} from "react";
 
 export default function PlayersListPage() {
@@ -14,15 +14,18 @@ export default function PlayersListPage() {
             .then(setPlayer)
     }, [])
 
-    const handleClick = (player) => {
-        deletePlayer(player)
-        getAllPlayer()
+    const handleClickDelete = (player) => {
+        deletePlayer(player).then(getAllPlayer).then(setPlayer)
+    }
+
+    const handleClickUpdate = (player) => {
+        putPlayer(player).then(getAllPlayer).then(setPlayer)
     }
 
     const playersList = player.map(player =>
         <List key={player.id}> {player.name}
-            <button onClick={() => handleClick(player)}  >Delete</button>
-            <button onClick={() => handleClick(player)}  >Update</button>
+            <button onClick={() => handleClickDelete(player)}>Delete</button>
+            <button onClick={() => handleClickUpdate(player)}>Update</button>
         </List>)
 
     return (

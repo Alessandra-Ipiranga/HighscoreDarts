@@ -19,7 +19,7 @@ public class GroupEntity {
     @Column(name = "group_id")
     private Long id;
 
-    @Column(name = "group_name")
+    @Column(name = "group_name", nullable = false)
     private String name;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

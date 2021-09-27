@@ -21,13 +21,13 @@ import static org.springframework.http.ResponseEntity.notFound;
 import static org.springframework.http.ResponseEntity.ok;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
-@Tag(name = PlayerController.USER_CONTROLLER_TAG, description = "Provides CRUD operations for an Player")
-@Api(tags = PlayerController.USER_CONTROLLER_TAG)
-@RequestMapping("/dart")
+@Tag(name = PlayerController.PLAYER_CONTROLLER_TAG, description = "Provides CRUD operations for a Player")
+@Api(tags = PlayerController.PLAYER_CONTROLLER_TAG)
+@RequestMapping("/player")
 @RestController
 public class PlayerController {
 
-    public static final String USER_CONTROLLER_TAG = "Player";
+    public static final String PLAYER_CONTROLLER_TAG = "Player";
     private PlayerService playerService;
 
     @Autowired
@@ -81,6 +81,7 @@ public class PlayerController {
     private Player map(PlayerEntity playerEntity) {
         Player player = new Player();
         player.setName(playerEntity.getName());
+        player.setId(playerEntity.getId());
         return player;
     }
 

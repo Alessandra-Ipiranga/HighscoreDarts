@@ -8,7 +8,7 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Player {
 
-    @ApiModelProperty(required = true, example = "Max Muster", notes = "The name of the user")
+    @ApiModelProperty(required = true, example = "Max Muster", notes = "The name of the player")
     private String name;
 
     private Long id;
