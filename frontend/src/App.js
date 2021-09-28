@@ -13,7 +13,6 @@ export default function App() {
                 <Route path="/newTournament" component={TournamentPage}/>
                 <Route path="/groups/:number" component={GroupsPage}/>
                 <Route path="/groups/:number" component={GroupsPage}/>
-                <Route path="/playerEditPage" component={PlayerEditPage}/>
                 <Route path="/playersList" component={PlayersListPage}/>
             </Switch>
         </Router>
