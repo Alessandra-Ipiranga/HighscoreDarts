@@ -15,11 +15,15 @@ export default function PlayersListPage() {
     }, [])
 
     const handleClickDelete = (player) => {
-        deletePlayer(player).then(getAllPlayer).then(setPlayer)
+        deletePlayer(player)
+            .then(getAllPlayer)
+            .then(setPlayer)
     }
 
     const handleClickUpdate = (player) => {
-        putPlayer(player).then(getAllPlayer).then(setPlayer)
+        putPlayer(player)
+            .then(getAllPlayer)
+            .then(setPlayer)
     }
 
     const playersList = player.map(player =>

@@ -63,4 +63,11 @@ public class PlayerService {
         }
         return playerEntityOptional;
     }
+
+    public PlayerEntity updatePlayersName(String name) {
+        PlayerEntity playerEntity = find(name).orElseThrow(()
+                -> new IllegalArgumentException(String.format("Player name=%s not found", name)));
+        playerEntity.setName(name);
+        return playerRepository.save(playerEntity);
+    }
 }

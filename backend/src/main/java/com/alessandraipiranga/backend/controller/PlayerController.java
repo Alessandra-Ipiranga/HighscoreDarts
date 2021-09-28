@@ -2,7 +2,6 @@ package com.alessandraipiranga.backend.controller;
 
 import com.alessandraipiranga.backend.api.Player;
 import com.alessandraipiranga.backend.model.PlayerEntity;
-
 import com.alessandraipiranga.backend.service.PlayerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiResponse;
@@ -12,10 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static java.lang.String.format;
 import static javax.servlet.http.HttpServletResponse.*;
 import static org.springframework.http.ResponseEntity.notFound;
 import static org.springframework.http.ResponseEntity.ok;
@@ -83,6 +84,24 @@ public class PlayerController {
         player.setName(playerEntity.getName());
         player.setId(playerEntity.getId());
         return player;
+    }
+
+    @PutMapping("{name}")
+    @ApiResponses(value = {
+            @ApiResponse(code = SC_NOT_FOUND, message = "Player not found")
+    })
+    public ResponseEntity<Player> resetPassword(@PathVariable String name) {
+
+        Optional<PlayerEntity> optionalPlayerEntity = playerService.find(name);
+        if (optionalPlayerEntity.isEmpty())
+            throw new EntityNotFoundException(format("Unable to reset password for unknown player name=%s", name));
+
+        PlayerEntity updatedPlayerEntity = playerService.updatePlayersName(name);
+
+        Player updatedPlayer = map(updatedPlayerEntity);
+        updatedPlayer.setName(name);
+
+        return ok(updatedPlayer);
     }
 
     @DeleteMapping(value = "{name}", produces = APPLICATION_JSON_VALUE)

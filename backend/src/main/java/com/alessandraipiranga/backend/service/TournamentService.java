@@ -36,7 +36,6 @@ public class TournamentService {
             groupEntity.setName(String.valueOf(i));
             tournamentEntity.addGroup(groupEntity);
         }
-
         return tournamentRepository.save(tournamentEntity);
     }
 

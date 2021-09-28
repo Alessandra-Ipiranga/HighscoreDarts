@@ -19,3 +19,7 @@ export const deletePlayer = (player) =>
 export const putPlayer = (player) =>
     axios.put(`api/HighscoreDarts/player/`+player.name, player)
         .then(response => response.data)
+
+export const postTournament = (tournament) =>
+    axios.post(`api/HighscoreDarts/tournament`, tournament.groups, tournament.rounds)
+        .then(response => response.data)
