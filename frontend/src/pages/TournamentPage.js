@@ -41,14 +41,14 @@ export default function TournamentPage() {
                     <Input
                         type="number"
                         name="groups"
-                        value={groups}
+                        value={tournament.groups}
                         onChange={handleNumberChange}
                     />
                     <Label>Bitte geben Sie die Anzahl der Runden ein! </Label>
                     <Input
                         type="number"
                         name="rounds"
-                        value={rounds}
+                        value={tournament.rounds}
                         onChange={handleNumberChange}
                     />
                     <ButtonGroup>
