@@ -1,6 +1,5 @@
 import './App.css';
 import GroupsPage from "./pages/GroupsPage";
-import PlayersPage from "./pages/PlayersPage";
 import PlayersListPage from "./pages/PlayersListPage";
 import TournamentPage from "./pages/TournamentPage";
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";

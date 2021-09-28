@@ -18,8 +18,6 @@ const initialState = {
 export default function TournamentPage() {
 
     const [tournament, setTournament] = useState(initialState)
-    const [groups, setGroups] = useState()
-    const [rounds, setRounds] = useState()
 
     const handleNumberChange = event =>
         setTournament({...tournament, [event.target.name]: event.target.value})

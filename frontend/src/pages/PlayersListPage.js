@@ -2,7 +2,7 @@ import Header from "../components/Header";
 import List from "../components/List";
 import Page from "../components/Page";
 import Ul from "../components/Ul";
-import {deletePlayer, getAllPlayer, putPlayer} from "../service/api-service";
+import {deletePlayer, getAllPlayer} from "../service/api-service";
 import {useEffect, useState} from "react";
 
 export default function PlayersListPage() {
