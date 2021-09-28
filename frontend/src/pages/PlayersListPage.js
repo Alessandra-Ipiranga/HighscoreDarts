@@ -20,16 +20,9 @@ export default function PlayersListPage() {
             .then(setPlayer)
     }
 
-    const handleClickUpdate = (player) => {
-        putPlayer(player)
-            .then(getAllPlayer)
-            .then(setPlayer)
-    }
-
     const playersList = player.map(player =>
         <List key={player.id}> {player.name}
             <button onClick={() => handleClickDelete(player)}>Delete</button>
-            <button onClick={() => handleClickUpdate(player)}>Update</button>
         </List>)
 
     return (
