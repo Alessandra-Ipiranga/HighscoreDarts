@@ -1,7 +1,21 @@
 import axios from "axios";
 
-export const getPlayer = () =>
-    axios.get("/").then(response => response.data)
+export const getPlayer = player =>
+    axios.get("api/HighscoreDarts/player/"+player)
+        .then(response => response.data)
 
-export const postPlayer = (name) =>
-    axios.post(`api/HighscoreDarts/dart`,  name)
+export const getAllPlayer = (player) =>
+    axios.get("api/HighscoreDarts/player", player)
+        .then(response => response.data)
+
+export const postPlayer = (player) =>
+    axios.post(`api/HighscoreDarts/player`, player)
+        .then(response => response.data)
+
+export const deletePlayer = (player) =>
+    axios.delete(`api/HighscoreDarts/player/`+player.name, player)
+        .then(response => response.data)
+
+export const postTournament = (tournament) =>
+    axios.post(`api/HighscoreDarts/tournament`, tournament.groups, tournament.rounds)
+        .then(response => response.data)

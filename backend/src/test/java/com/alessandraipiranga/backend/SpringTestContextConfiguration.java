@@ -21,8 +21,6 @@ import static org.mockito.Mockito.mock;
 @TestConfiguration
 public class SpringTestContextConfiguration {
 
-    public static final String MOCKED_SERVICES_PROFILE = "mockedUserService";
-
     @Primary
     @Bean(name = "dataSource", destroyMethod = "shutdown")
     public EmbeddedDatabase dataSource() {
@@ -30,18 +28,4 @@ public class SpringTestContextConfiguration {
                 .setType(EmbeddedDatabaseType.H2)
                 .build();
     }
-
-    /*@Primary
-    @Bean
-    @Profile(MOCKED_SERVICES_PROFILE)
-    public UserService userService() {
-        return mock(UserService.class);
-    }
-
-    @Primary
-    @Bean(name = "githubAPIMock")
-    @AliasFor("githubAPI")
-    public GithubAPI getGithubAPI() {
-        return mock(GithubAPI.class);
-    }*/
 }

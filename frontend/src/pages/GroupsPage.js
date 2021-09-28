@@ -8,7 +8,7 @@ export default function GroupsPage() {
 
     return (
         <Page>
-            <Button><Link to={"/players"}>Gruppe {number}</Link></Button>
+            <Button><Link to={"/players"}></Link>Gruppe {number}</Button>
         </Page>
     )
 }
