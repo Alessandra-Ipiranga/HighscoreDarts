@@ -34,20 +34,6 @@ public class MatchService {
         this.tournamentRepository = tournamentRepository1;
     }
 
-    public PlayerEntity find(Long id, PlayerEntity playerEntity) {
-        MatchEntity matchEntity = find(id);
-
-        if (matchEntity.getPlayer1().equals(playerEntity)) {
-            return matchEntity.getPlayer1();
-        }
-        if (matchEntity.getPlayer2().equals(playerEntity)) {
-            return matchEntity.getPlayer2();
-        }
-
-        throw new IllegalArgumentException(String.format(
-                "Match id=%d does not contain player id=%d", id, playerEntity.getId()));
-    }
-
     private MatchEntity find(Long id) {
         Optional<MatchEntity> matchEntityOptional = matchRepository.findById(id);
         if (matchEntityOptional.isEmpty()) {

@@ -70,7 +70,6 @@ public class PlayerController {
     })
     public ResponseEntity<Player> create(@RequestBody Player player,
                                          @PathVariable String tournamentId, @PathVariable String groupName) {
-
         PlayerEntity playerEntity = new PlayerEntity();
         playerEntity.setName(player.getName());
 

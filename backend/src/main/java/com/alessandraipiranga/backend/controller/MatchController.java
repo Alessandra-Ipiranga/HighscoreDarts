@@ -3,7 +3,6 @@ package com.alessandraipiranga.backend.controller;
 import com.alessandraipiranga.backend.api.Match;
 import com.alessandraipiranga.backend.api.MatchRequest;
 import com.alessandraipiranga.backend.model.MatchEntity;
-import com.alessandraipiranga.backend.model.PlayerEntity;
 import com.alessandraipiranga.backend.service.MatchService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiResponse;
@@ -57,18 +56,9 @@ public class MatchController extends ControllerBase {
                                           @RequestBody MatchRequest matchRequest) {
         Long id = Long.valueOf(matchId);
 
-        checkPlayer(id, matchRequest.getPlayer1Id());
-        checkPlayer(id, matchRequest.getPlayer2Id());
-
         MatchEntity matchEntity = matchService.addRound(id, round, matchRequest.getPlayer1Score(), matchRequest.getPlayer2Score());
 
         Match match = map(matchEntity);
         return ResponseEntity.ok(match);
-    }
-
-    private void checkPlayer(Long matchId, Long playerId) {
-        PlayerEntity playerEntity = new PlayerEntity();
-        playerEntity.setId(playerId);
-        matchService.find(matchId, playerEntity);
     }
 }
