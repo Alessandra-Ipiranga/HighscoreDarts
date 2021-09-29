@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -28,6 +29,10 @@ public class GroupEntity {
     @JoinColumn(name = "group_id")
     private final Set<PlayerEntity> players = new LinkedHashSet<>();
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "group_id")
+    private final Set<MatchEntity> matches = new LinkedHashSet<>();
+
     @Id
     @GeneratedValue
     @Column(name = "group_id")
@@ -38,6 +43,10 @@ public class GroupEntity {
 
     public void addPlayer(PlayerEntity playerEntity) {
         players.add(playerEntity);
+    }
+
+    public void addMatches(Collection<MatchEntity> matchEntities) {
+        matches.addAll(matchEntities);
     }
 
     @Override

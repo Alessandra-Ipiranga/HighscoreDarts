@@ -16,6 +16,9 @@ public class Player {
     @ApiModelProperty(required = true, example = "Max Muster", notes = "The name of the player")
     private String name;
 
+    @ApiModelProperty(notes = "The score of the player")
+    private Integer score;
+
     public String getName() {
         return name != null ? name.trim() : null;
     }

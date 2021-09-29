@@ -14,10 +14,19 @@ public class Group {
 
     private Set<Player> players;
 
+    private Set<Match> matches;
+
     public void addPlayer(Player player) {
         if (players == null) {
             players = new LinkedHashSet<>();
         }
         players.add(player);
+    }
+
+    public void addMatch(Match match) {
+        if (matches == null) {
+            matches = new LinkedHashSet<>();
+        }
+        matches.add(match);
     }
 }

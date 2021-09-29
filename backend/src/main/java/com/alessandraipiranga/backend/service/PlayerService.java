@@ -2,7 +2,6 @@ package com.alessandraipiranga.backend.service;
 
 import com.alessandraipiranga.backend.model.GroupEntity;
 import com.alessandraipiranga.backend.model.PlayerEntity;
-import com.alessandraipiranga.backend.model.RoundEntity;
 import com.alessandraipiranga.backend.model.TournamentEntity;
 import com.alessandraipiranga.backend.model.TournamentStatus;
 import com.alessandraipiranga.backend.repo.PlayerRepository;
@@ -44,14 +43,8 @@ public class PlayerService {
 
         for (GroupEntity groupEntity : tournamentEntity.getGroups()) {
             if (groupEntity.getName().equals(groupName)) {
-                for (int i = 1; i <= tournamentEntity.getRounds(); i++) {
-                    RoundEntity roundEntity = new RoundEntity();
-                    roundEntity.setNumber(i);
-                    playerEntity.addRound(roundEntity);
-                }
                 groupEntity.addPlayer(playerEntity);
             }
-
         }
 
         if (tournamentEntity.getGroupPlayer(playerEntity).isEmpty()) {
@@ -59,22 +52,7 @@ public class PlayerService {
         }
 
         tournamentEntity = tournamentService.save(tournamentEntity);
-        return findPlayer(tournamentEntity, playerEntity);
-    }
-
-    private PlayerEntity findPlayer(TournamentEntity tournamentEntity, PlayerEntity playerEntity) {
-        Optional<GroupEntity> playerGroupOpt = tournamentEntity.getGroupPlayer(playerEntity);
-        if (playerGroupOpt.isPresent()) {
-            GroupEntity groupEntity = playerGroupOpt.get();
-
-            for (PlayerEntity player : groupEntity.getPlayers()) {
-                if (player.equals(playerEntity)) {
-                    return player;
-                }
-            }
-        }
-        throw new EntityNotFoundException(
-                String.format("Player not found in tournament id=%d", tournamentEntity.getId()));
+        return find(tournamentEntity.getTournamentId(), playerEntity);
     }
 
     private void checkPlayerNameExists(TournamentEntity tournamentEntity, String playerName) {
@@ -88,10 +66,28 @@ public class PlayerService {
         }
     }
 
+    public PlayerEntity find(String tournamentId, PlayerEntity playerEntity) {
+        TournamentEntity tournamentEntity = tournamentService.find(tournamentId);
+
+        Optional<GroupEntity> playerGroupOpt = tournamentEntity.getGroupPlayer(playerEntity);
+        if (playerGroupOpt.isPresent()) {
+            GroupEntity groupEntity = playerGroupOpt.get();
+
+            for (PlayerEntity player : groupEntity.getPlayers()) {
+                if (player.equals(playerEntity)) {
+                    return player;
+                }
+            }
+        }
+        throw new EntityNotFoundException(
+                String.format("Player id=%d not found in tournament id=%d",
+                        playerEntity.getId(), tournamentEntity.getId()));
+    }
+
     public PlayerEntity find(Long id) {
         Optional<PlayerEntity> playerEntityOptional = playerRepository.findById(id);
         if (playerEntityOptional.isEmpty()) {
-            throw new EntityNotFoundException("Player not found");
+            throw new EntityNotFoundException(String.format("Player id=%d not found", id));
         }
         return playerEntityOptional.get();
     }

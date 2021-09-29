@@ -1,10 +1,14 @@
 package com.alessandraipiranga.backend.controller;
 
 import com.alessandraipiranga.backend.api.Group;
+import com.alessandraipiranga.backend.api.Match;
 import com.alessandraipiranga.backend.api.Player;
+import com.alessandraipiranga.backend.api.Round;
 import com.alessandraipiranga.backend.api.Tournament;
 import com.alessandraipiranga.backend.model.GroupEntity;
+import com.alessandraipiranga.backend.model.MatchEntity;
 import com.alessandraipiranga.backend.model.PlayerEntity;
+import com.alessandraipiranga.backend.model.RoundEntity;
 import com.alessandraipiranga.backend.model.TournamentEntity;
 import com.alessandraipiranga.backend.service.TournamentService;
 import io.swagger.annotations.Api;
@@ -24,8 +28,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
+import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
+import static javax.servlet.http.HttpServletResponse.SC_CONFLICT;
 import static javax.servlet.http.HttpServletResponse.SC_CREATED;
 import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
@@ -33,7 +40,7 @@ import static org.springframework.http.ResponseEntity.ok;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @Tag(name = TournamentController.TOURNAMENT_CONTROLLER_TAG,
-        description = "Provides CRUD operations for a Entity")
+        description = "Provides CR operations for a Tournament")
 @Api(tags = TournamentController.TOURNAMENT_CONTROLLER_TAG)
 @CrossOrigin
 @RestController
@@ -54,7 +61,6 @@ public class TournamentController {
     @ApiResponses(value = {
             @ApiResponse(code = SC_OK, message = "Tournament found"),
             @ApiResponse(code = SC_NOT_FOUND, message = "Tournament not found")
-
     })
     public ResponseEntity<Tournament> findTournament(@PathVariable String id) {
         TournamentEntity tournamentEntity = tournamentService.find(id);
@@ -69,8 +75,9 @@ public class TournamentController {
     )
     @ApiResponses(value = {
             @ApiResponse(code = SC_OK, message = "Tournament found"),
-            @ApiResponse(code = SC_NOT_FOUND, message = "Tournament not found")
-
+            @ApiResponse(code = SC_BAD_REQUEST, message = "Tournament cannot be started"),
+            @ApiResponse(code = SC_NOT_FOUND, message = "Tournament not found"),
+            @ApiResponse(code = SC_CONFLICT, message = "Tournament cannot be started")
     })
     public ResponseEntity<Tournament> startTournament(@PathVariable String id) {
         TournamentEntity tournamentEntity = tournamentService.start(id);
@@ -110,6 +117,7 @@ public class TournamentController {
         groups.stream()
                 .map(this::map)
                 .forEach(tournament::addGroup);
+
         return tournament;
     }
 
@@ -122,6 +130,12 @@ public class TournamentController {
             Player player = map(playerEntity);
             group.addPlayer(player);
         }
+
+        Set<MatchEntity> matches = groupEntity.getMatches();
+        for (MatchEntity matchEntity : matches) {
+            Match match = map(matchEntity);
+            group.addMatch(match);
+        }
         return group;
     }
 
@@ -130,5 +144,28 @@ public class TournamentController {
         player.setId(playerEntity.getId());
         player.setName(playerEntity.getName());
         return player;
+    }
+
+    private Match map(MatchEntity matchEntity) {
+        Match match = new Match();
+        match.setId(matchEntity.getId());
+        match.setPlayer1Id(matchEntity.getPlayer1().getId());
+        match.setPlayer2Id(matchEntity.getPlayer2().getId());
+
+        Set<Round> rounds = map(matchEntity.getRounds());
+        match.setRounds(rounds);
+        return match;
+    }
+
+    private Set<Round> map(Set<RoundEntity> roundEntities) {
+        Set<Round> rounds = new LinkedHashSet<>();
+        for (RoundEntity roundEntity : roundEntities) {
+            Round round = new Round();
+            round.setNumber(roundEntity.getNumber());
+            round.setPlayer1Score(roundEntity.getPlayer1Score());
+            round.setPlayer2Score(roundEntity.getPlayer2Score());
+            rounds.add(round);
+        }
+        return rounds;
     }
 }

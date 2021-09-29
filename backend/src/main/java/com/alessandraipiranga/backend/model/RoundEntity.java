@@ -25,8 +25,11 @@ public class RoundEntity {
     @Column(name = "round_number", nullable = false)
     private int number;
 
-    @Column(name = "round_score", nullable = false)
-    private int score = 0;
+    @Column(name = "round_score_1")
+    private Integer player1Score = 0;
+
+    @Column(name = "round_score_2")
+    private Integer player2Score = 0;
 
     @Override
     public boolean equals(Object o) {

@@ -4,28 +4,20 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "hs_player")
 @Getter
 @Setter
 public class PlayerEntity {
-
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "player_id")
-    private final Set<RoundEntity> rounds = new LinkedHashSet<>();
 
     @Id
     @GeneratedValue
@@ -34,10 +26,6 @@ public class PlayerEntity {
 
     @Column(name = "player_name", nullable = false)
     private String name;
-
-    public void addRound(RoundEntity roundEntity) {
-        rounds.add(roundEntity);
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -59,6 +47,14 @@ public class PlayerEntity {
     @Override
     public int hashCode() {
         return new HashCodeBuilder().append(name).toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.NO_CLASS_NAME_STYLE)
+                .append("id", id)
+                .append("name", name)
+                .toString();
     }
 }
 
