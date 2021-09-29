@@ -14,7 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 
@@ -26,7 +26,7 @@ public class GroupEntity {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "group_id")
-    private final Set<PlayerEntity> players = new HashSet<>();
+    private final Set<PlayerEntity> players = new LinkedHashSet<>();
 
     @Id
     @GeneratedValue
@@ -35,6 +35,10 @@ public class GroupEntity {
 
     @Column(name = "group_name", nullable = false)
     private String name;
+
+    public void addPlayer(PlayerEntity playerEntity) {
+        players.add(playerEntity);
+    }
 
     @Override
     public boolean equals(Object o) {
