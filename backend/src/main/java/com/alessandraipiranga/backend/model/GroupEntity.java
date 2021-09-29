@@ -25,11 +25,11 @@ import java.util.Set;
 @Setter
 public class GroupEntity {
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "group_id")
     private final Set<PlayerEntity> players = new LinkedHashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "group_id")
     private final Set<MatchEntity> matches = new LinkedHashSet<>();
 

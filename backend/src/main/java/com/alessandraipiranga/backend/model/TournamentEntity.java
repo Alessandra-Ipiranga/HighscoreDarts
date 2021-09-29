@@ -28,7 +28,7 @@ import java.util.Set;
 @Table(name = "hs_tournament")
 public class TournamentEntity {
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "tournament_id")
     private final Set<GroupEntity> groups = new LinkedHashSet<>();
 
@@ -49,6 +49,10 @@ public class TournamentEntity {
 
     public void addGroup(GroupEntity groupEntity) {
         groups.add(groupEntity);
+    }
+
+    public void removeGroup(GroupEntity group) {
+        groups.removeIf(groupEntity -> groupEntity.equals(group));
     }
 
     @Transient

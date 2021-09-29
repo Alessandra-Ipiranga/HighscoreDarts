@@ -1,6 +1,5 @@
 package com.alessandraipiranga.backend.service;
 
-import com.alessandraipiranga.backend.api.Round;
 import com.alessandraipiranga.backend.model.MatchEntity;
 import com.alessandraipiranga.backend.model.PlayerEntity;
 import com.alessandraipiranga.backend.model.RoundEntity;
@@ -107,13 +106,7 @@ public class MatchService {
             throw new IllegalArgumentException("Round must in between 1 and " + tournamentEntityRounds);
         }
 
-
-//
-//        RoundEntity roundEntity = new RoundEntity();
-//        roundEntity.setScore(score);
-
-
-//        matchEntity.addRound();
+        //
     }
 
     private int random(int playerSize, int invalid) {

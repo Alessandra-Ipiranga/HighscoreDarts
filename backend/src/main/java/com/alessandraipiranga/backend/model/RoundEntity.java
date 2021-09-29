@@ -2,6 +2,7 @@ package com.alessandraipiranga.backend.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -15,7 +16,7 @@ import javax.persistence.Table;
 @Table(name = "hs_round")
 @Getter
 @Setter
-public class RoundEntity {
+public class RoundEntity implements Comparable<RoundEntity> {
 
     @Id
     @GeneratedValue
@@ -51,5 +52,12 @@ public class RoundEntity {
     @Override
     public int hashCode() {
         return new HashCodeBuilder().append(id).append(number).toHashCode();
+    }
+
+    @Override
+    public int compareTo(RoundEntity other) {
+        return new CompareToBuilder()
+                .append(this.number, other.number)
+                .toComparison();
     }
 }

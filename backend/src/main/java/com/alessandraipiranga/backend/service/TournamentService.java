@@ -77,6 +77,8 @@ public class TournamentService {
         for (GroupEntity groupEntity : groupEntities) {
             Set<PlayerEntity> players = groupEntity.getPlayers();
             if (players.isEmpty()) {
+                // remove empty group, after starting a tournament no player can join
+                tournamentEntity.removeGroup(groupEntity);
                 continue;
             }
             if (players.size() < 2) {

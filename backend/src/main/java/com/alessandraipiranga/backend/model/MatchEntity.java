@@ -13,10 +13,12 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.Set;
 
 
@@ -26,7 +28,7 @@ import java.util.Set;
 @Setter
 public class MatchEntity {
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "match_id")
     private final Set<RoundEntity> rounds = new LinkedHashSet<>();
 
@@ -35,14 +37,20 @@ public class MatchEntity {
     @Column(name = "match_id")
     private Long id;
 
-    @OneToOne(optional = false)
+    @ManyToOne(optional = false)
     private PlayerEntity player1;
 
-    @OneToOne(optional = false)
+    @ManyToOne(optional = false)
     private PlayerEntity player2;
 
     public void addRound(RoundEntity roundEntity) {
         rounds.add(roundEntity);
+    }
+
+    public Set<RoundEntity> getRounds() {
+        LinkedList<RoundEntity> sortedRounds = new LinkedList<>(rounds);
+        Collections.sort(sortedRounds);
+        return new LinkedHashSet<>(sortedRounds);
     }
 
     @Override
