@@ -1,4 +1,3 @@
-
 package com.alessandraipiranga.backend.config;
 
 import org.springframework.boot.autoconfigure.domain.EntityScan;

@@ -1,13 +1,16 @@
 package com.alessandraipiranga.backend.service;
 
+import com.alessandraipiranga.backend.model.GroupEntity;
 import com.alessandraipiranga.backend.model.PlayerEntity;
+import com.alessandraipiranga.backend.model.RoundEntity;
+import com.alessandraipiranga.backend.model.TournamentEntity;
+import com.alessandraipiranga.backend.model.TournamentStatus;
 import com.alessandraipiranga.backend.repo.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
-import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.util.StringUtils.hasText;
@@ -16,58 +19,92 @@ import static org.springframework.util.StringUtils.hasText;
 public class PlayerService {
 
     private final PlayerRepository playerRepository;
+    private final TournamentService tournamentService;
 
     @Autowired
-    public PlayerService(PlayerRepository playerRepository) {
+    public PlayerService(PlayerRepository playerRepository, TournamentService tournamentService) {
         this.playerRepository = playerRepository;
+        this.tournamentService = tournamentService;
     }
 
-    public Optional<PlayerEntity> find(String name) {
-        return playerRepository.findByName(name);
-    }
-
-    public PlayerEntity create(PlayerEntity playerEntity) {
+    public PlayerEntity create(PlayerEntity playerEntity, String tournamentId, String groupName) {
         String name = playerEntity.getName();
         if (!hasText(name)) {
             throw new IllegalArgumentException("Name must not be blank to create Player");
         }
-        checkPlayerNameExists(name);
 
-        return playerRepository.save(playerEntity);
+        TournamentEntity tournamentEntity = tournamentService.find(tournamentId);
+        if (!TournamentStatus.OPEN.equals(tournamentEntity.getStatus())) {
+            throw new IllegalArgumentException(String.format(
+                    "Adding players to a tournament not allowed in state OPEN, but state is=%s",
+                    tournamentEntity.getStatus()));
+        }
+
+        checkPlayerNameExists(tournamentEntity, playerEntity.getName());
+
+        for (GroupEntity groupEntity : tournamentEntity.getGroups()) {
+            if (groupEntity.getName().equals(groupName)) {
+                for (int i = 1; i <= tournamentEntity.getRounds(); i++) {
+                    RoundEntity roundEntity = new RoundEntity();
+                    roundEntity.setNumber(i);
+                    playerEntity.addRound(roundEntity);
+                }
+                groupEntity.addPlayer(playerEntity);
+            }
+
+        }
+
+        if (tournamentEntity.getGroupPlayer(playerEntity).isEmpty()) {
+            throw new EntityNotFoundException("Group name=%s not found".formatted(groupName));
+        }
+
+        tournamentEntity = tournamentService.save(tournamentEntity);
+        return findPlayer(tournamentEntity, playerEntity);
     }
 
-    private void checkPlayerNameExists(String name) {
-        Optional<PlayerEntity> existingUser = find(name);
-        if (existingUser.isPresent()) {
+    private PlayerEntity findPlayer(TournamentEntity tournamentEntity, PlayerEntity playerEntity) {
+        Optional<GroupEntity> playerGroupOpt = tournamentEntity.getGroupPlayer(playerEntity);
+        if (playerGroupOpt.isPresent()) {
+            GroupEntity groupEntity = playerGroupOpt.get();
+
+            for (PlayerEntity player : groupEntity.getPlayers()) {
+                if (player.equals(playerEntity)) {
+                    return player;
+                }
+            }
+        }
+        throw new EntityNotFoundException(
+                String.format("Player not found in tournament id=%d", tournamentEntity.getId()));
+    }
+
+    private void checkPlayerNameExists(TournamentEntity tournamentEntity, String playerName) {
+        PlayerEntity examplePlayer = new PlayerEntity();
+        examplePlayer.setName(playerName);
+
+        Optional<GroupEntity> groupPlayerOpt = tournamentEntity.getGroupPlayer(examplePlayer);
+        if (groupPlayerOpt.isPresent()) {
             throw new EntityExistsException(String.format(
-                    "Player with name=%s already exists", name));
+                    "Player with name=%s already exists in group %s", playerName, groupPlayerOpt.get().getName()));
         }
     }
 
-    public PlayerEntity findPlayer(String name) {
-        Optional<PlayerEntity> playerEntityOptional = playerRepository.findByName(name);
-        if(playerEntityOptional.isEmpty()){
+    public PlayerEntity find(Long id) {
+        Optional<PlayerEntity> playerEntityOptional = playerRepository.findById(id);
+        if (playerEntityOptional.isEmpty()) {
             throw new EntityNotFoundException("Player not found");
-        } return playerEntityOptional.get();
-    }
-
-    public List<PlayerEntity> findAllPlayer() {
-        return playerRepository.findAll();
-    }
-
-    public Optional<PlayerEntity> delete(String name) {
-        Optional<PlayerEntity> playerEntityOptional = find(name);
-        if (playerEntityOptional.isPresent()) {
-            PlayerEntity userEntity = playerEntityOptional.get();
-            playerRepository.delete(userEntity);
         }
-        return playerEntityOptional;
+        return playerEntityOptional.get();
     }
 
-    public PlayerEntity updatePlayersName(String name) {
-        PlayerEntity playerEntity = find(name).orElseThrow(()
-                -> new IllegalArgumentException(String.format("Player name=%s not found", name)));
-        playerEntity.setName(name);
+    public PlayerEntity delete(Long id) {
+        PlayerEntity playerEntity = find(id);
+        playerRepository.delete(playerEntity);
+        return playerEntity;
+    }
+
+    public PlayerEntity update(Long id, PlayerEntity player) {
+        PlayerEntity playerEntity = find(id);
+        playerEntity.setName(player.getName());
         return playerRepository.save(playerEntity);
     }
 }

@@ -1,19 +1,20 @@
 package com.alessandraipiranga.backend.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import javax.persistence.*;
-import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-@Data
 @Entity
 @Table(name = "hs_round")
-@Builder(toBuilder = true)
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
 public class RoundEntity {
 
     @Id
@@ -25,18 +26,27 @@ public class RoundEntity {
     private int number;
 
     @Column(name = "round_score", nullable = false)
-    private int score;
+    private int score = 0;
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
         RoundEntity that = (RoundEntity) o;
-        return number == that.number && Objects.equals(id, that.id);
+        if (id != null && that.id != null) {
+            return new EqualsBuilder().append(id, that.id).isEquals();
+        }
+        return new EqualsBuilder().append(number, that.number).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, number);
+        return new HashCodeBuilder().append(id).append(number).toHashCode();
     }
 }

@@ -8,75 +8,128 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.util.Assert;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.persistence.EntityNotFoundException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import static java.lang.String.format;
-import static javax.servlet.http.HttpServletResponse.*;
-import static org.springframework.http.ResponseEntity.notFound;
+import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
+import static javax.servlet.http.HttpServletResponse.SC_CONFLICT;
+import static javax.servlet.http.HttpServletResponse.SC_CREATED;
+import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
+import static javax.servlet.http.HttpServletResponse.SC_OK;
 import static org.springframework.http.ResponseEntity.ok;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 @Tag(name = PlayerController.PLAYER_CONTROLLER_TAG, description = "Provides CRUD operations for a Player")
 @Api(tags = PlayerController.PLAYER_CONTROLLER_TAG)
-@RequestMapping("/player")
 @RestController
 public class PlayerController {
 
     public static final String PLAYER_CONTROLLER_TAG = "Player";
-    private PlayerService playerService;
+
+    private final PlayerService playerService;
 
     @Autowired
     public PlayerController(PlayerService playerService) {
         this.playerService = playerService;
     }
 
-    @GetMapping("/{name}")
-    public ResponseEntity<Player> findPlayer(@PathVariable String name){
-        PlayerEntity playerEntity = playerService.findPlayer(name);
+    @GetMapping(
+            value = "/player/{id}",
+            produces = APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Player> findPlayer(@PathVariable Long id) {
+        PlayerEntity playerEntity = playerService.find(id);
         Player findPlayer = map(playerEntity);
         return ok(findPlayer);
     }
 
-    @GetMapping()
-    public ResponseEntity<List<Player>> findAllPlayer(){
-        List<PlayerEntity> playerEntityList = playerService.findAllPlayer();
-        List <Player> playerList = map(playerEntityList);
-        return ok(playerList);
+    @PostMapping(
+            value = "/player/tournament/{tournamentId}/team/{teamName}",
+            produces = APPLICATION_JSON_VALUE
+    )
+    @ResponseStatus(code = HttpStatus.CREATED)
+    @ApiResponses(value = {
+            @ApiResponse(code = SC_CREATED, message = "Player created"),
+            @ApiResponse(code = SC_NOT_FOUND, message = "Tournament or team not found"),
+            @ApiResponse(code = SC_BAD_REQUEST, message = "Unable to create Player"),
+            @ApiResponse(code = SC_CONFLICT, message = "Unable to create Player, player already exists")
+    })
+    public ResponseEntity<Player> create(@RequestBody Player player,
+                                         @PathVariable String tournamentId, @PathVariable String teamName) {
+
+        PlayerEntity playerEntity = new PlayerEntity();
+        playerEntity.setName(player.getName());
+
+        PlayerEntity createdPlayerEntity = playerService.create(playerEntity, tournamentId, teamName);
+
+        Player createdPlayer = map(createdPlayerEntity);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentContextPath()
+                .path("/player/%s".formatted(createdPlayer.getId()))
+                .build()
+                .toUri();
+        return ResponseEntity.created(location).body(createdPlayer);
     }
 
-    public List<Player> map(List<PlayerEntity> playerEntityList){
+    @PutMapping(
+            value = "/player/{id}",
+            produces = APPLICATION_JSON_VALUE,
+            consumes = APPLICATION_JSON_VALUE
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = SC_OK, message = "Player updated"),
+            @ApiResponse(code = SC_NOT_FOUND, message = "Player not found")
+    })
+    public ResponseEntity<Player> update(@PathVariable Long id, @RequestBody Player player) {
+        String name = player.getName();
+        Assert.hasText(name, "Player name must not be blank to update");
 
+        PlayerEntity playerEntity = new PlayerEntity();
+        playerEntity.setName(name);
+
+        PlayerEntity updatedPlayerEntity = playerService.update(id, playerEntity);
+
+        Player updatedPlayer = map(updatedPlayerEntity);
+        return ok(updatedPlayer);
+    }
+
+    @DeleteMapping(
+            value = "/player/{id}",
+            produces = APPLICATION_JSON_VALUE
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = SC_OK, message = "Player deleted"),
+            @ApiResponse(code = SC_NOT_FOUND, message = "Player not found")
+    })
+    public ResponseEntity<Player> delete(@PathVariable Long id) {
+        PlayerEntity playerEntity = playerService.delete(id);
+
+        Player player = map(playerEntity);
+        return ok(player);
+    }
+
+    private List<Player> map(List<PlayerEntity> playerEntityList) {
         List<Player> playerList = new ArrayList<>();
-
-        for(PlayerEntity playerEntity :playerEntityList){
+        for (PlayerEntity playerEntity : playerEntityList) {
             Player player = map(playerEntity);
             playerList.add(player);
 
         }
-        return(playerList);
-    }
-
-    @PostMapping
-    @ApiResponses(value = {
-            @ApiResponse(code = SC_BAD_REQUEST, message = "Unable to create Player with blank name"),
-            @ApiResponse(code = SC_CONFLICT, message = "Unable to create Player, user already exists")
-    })
-    public ResponseEntity<Player> create(@RequestBody Player player) {
-        PlayerEntity playerEntity = PlayerEntity.builder()
-                .name(player.getName())
-                .build();
-
-        PlayerEntity createdUserEntity = playerService.create(playerEntity);
-
-        Player createdPlayer = map(createdUserEntity);
-
-        return ok(createdPlayer);
+        return (playerList);
     }
 
     private Player map(PlayerEntity playerEntity) {
@@ -84,38 +137,5 @@ public class PlayerController {
         player.setName(playerEntity.getName());
         player.setId(playerEntity.getId());
         return player;
-    }
-
-    @PutMapping("{name}")
-    @ApiResponses(value = {
-            @ApiResponse(code = SC_NOT_FOUND, message = "Player not found")
-    })
-    public ResponseEntity<Player> resetPassword(@PathVariable String name) {
-
-        Optional<PlayerEntity> optionalPlayerEntity = playerService.find(name);
-        if (optionalPlayerEntity.isEmpty())
-            throw new EntityNotFoundException(format("Unable to reset password for unknown player name=%s", name));
-
-        PlayerEntity updatedPlayerEntity = playerService.updatePlayersName(name);
-
-        Player updatedPlayer = map(updatedPlayerEntity);
-        updatedPlayer.setName(name);
-
-        return ok(updatedPlayer);
-    }
-
-    @DeleteMapping(value = "{name}", produces = APPLICATION_JSON_VALUE)
-    @ApiResponses(value = {
-            @ApiResponse(code = SC_NOT_FOUND, message = "User not found")
-    })
-    public ResponseEntity<Player> delete(@PathVariable String name) {
-
-        Optional<PlayerEntity> userEntityOptional = playerService.delete(name);
-        if (userEntityOptional.isPresent()) {
-            PlayerEntity playerEntity = userEntityOptional.get();
-            Player player = map(playerEntity);
-            return ok(player);
-        }
-        return notFound().build();
     }
 }
