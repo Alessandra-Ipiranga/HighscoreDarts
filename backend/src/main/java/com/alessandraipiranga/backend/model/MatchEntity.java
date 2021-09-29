@@ -87,4 +87,20 @@ public class MatchEntity {
                 .append("player2", player2)
                 .toString();
     }
+
+    public Integer getPlayer1TotalScore() {
+        int totalScore = 0;
+        for (RoundEntity roundEntity : getRounds()) {
+            totalScore += roundEntity.getPlayer1Score();
+        }
+        return totalScore;
+    }
+
+    public Integer getPlayer2TotalScore() {
+        int totalScore = 0;
+        for (RoundEntity roundEntity : getRounds()) {
+            totalScore += roundEntity.getPlayer2Score();
+        }
+        return totalScore;
+    }
 }

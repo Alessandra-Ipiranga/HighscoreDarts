@@ -4,6 +4,7 @@ import com.alessandraipiranga.backend.model.MatchEntity;
 import com.alessandraipiranga.backend.model.PlayerEntity;
 import com.alessandraipiranga.backend.model.RoundEntity;
 import com.alessandraipiranga.backend.model.TournamentEntity;
+import com.alessandraipiranga.backend.model.TournamentStatus;
 import com.alessandraipiranga.backend.repo.MatchRepository;
 import com.alessandraipiranga.backend.repo.TournamentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,8 +93,11 @@ public class MatchService {
         return factorial(playersSize) / (2 * factorial(playersSize - 2));
     }
 
-    public void addRound(Long id, int round, PlayerEntity player1, int scorePlayer1, PlayerEntity player2, int scorePlayer2) {
+    public MatchEntity addRound(Long id, int round, int scorePlayer1, int scorePlayer2) {
         MatchEntity matchEntity = find(id);
+
+        checkScore(scorePlayer1);
+        checkScore(scorePlayer2);
 
         Optional<TournamentEntity> tournamentEntityOptional = tournamentRepository.findByMatchId(matchEntity.getId());
         if (tournamentEntityOptional.isEmpty()) {
@@ -101,12 +105,32 @@ public class MatchService {
         }
         TournamentEntity tournamentEntity = tournamentEntityOptional.get();
 
-        int tournamentEntityRounds = tournamentEntity.getRounds();
-        if (round < 0 && round > tournamentEntityRounds) {
-            throw new IllegalArgumentException("Round must in between 1 and " + tournamentEntityRounds);
+        if (!TournamentStatus.STARTED.equals(tournamentEntity.getStatus())) {
+            throw new IllegalStateException(String.format(
+                    "Tournament not in state %s but in state %s",
+                    TournamentStatus.STARTED, tournamentEntity.getStatus()));
         }
 
-        //
+        int tournamentEntityRounds = tournamentEntity.getRounds();
+        if (round < 0 || round > tournamentEntityRounds) {
+            throw new IllegalArgumentException(
+                    String.format("Round must in between 1 and %d but was %d", tournamentEntityRounds, round));
+        }
+
+        Set<RoundEntity> roundEntities = matchEntity.getRounds();
+        for (RoundEntity roundEntity : roundEntities) {
+            if (roundEntity.getNumber() == round) {
+                roundEntity.setPlayer1Score(scorePlayer1);
+                roundEntity.setPlayer2Score(scorePlayer2);
+            }
+        }
+        return matchRepository.save(matchEntity);
+    }
+
+    private void checkScore(int score) {
+        if (score < 0 || score > 180) {
+            throw new IllegalArgumentException(String.format("Score must in between 0 and 180 but was %d", score));
+        }
     }
 
     private int random(int playerSize, int invalid) {

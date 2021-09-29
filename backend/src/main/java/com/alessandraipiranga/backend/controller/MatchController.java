@@ -1,7 +1,8 @@
 package com.alessandraipiranga.backend.controller;
 
+import com.alessandraipiranga.backend.api.Match;
 import com.alessandraipiranga.backend.api.MatchRequest;
-import com.alessandraipiranga.backend.api.Tournament;
+import com.alessandraipiranga.backend.model.MatchEntity;
 import com.alessandraipiranga.backend.model.PlayerEntity;
 import com.alessandraipiranga.backend.service.MatchService;
 import io.swagger.annotations.Api;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
+import static javax.servlet.http.HttpServletResponse.SC_CONFLICT;
 import static javax.servlet.http.HttpServletResponse.SC_CREATED;
 import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
@@ -27,7 +30,7 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 @Api(tags = MatchController.MATCH_CONTROLLER_TAG)
 @CrossOrigin
 @RestController
-public class MatchController {
+public class MatchController extends ControllerBase {
 
     public static final String MATCH_CONTROLLER_TAG = "Match";
 
@@ -46,26 +49,26 @@ public class MatchController {
     @ResponseStatus(code = HttpStatus.CREATED)
     @ApiResponses(value = {
             @ApiResponse(code = SC_CREATED, message = "Round created"),
-            @ApiResponse(code = SC_NOT_FOUND, message = "Tournament not found")
+            @ApiResponse(code = SC_BAD_REQUEST, message = "Players or rounds invalid or invalid score values"),
+            @ApiResponse(code = SC_NOT_FOUND, message = "Match or tournament or not found"),
+            @ApiResponse(code = SC_CONFLICT, message = "Tournament not in status STARTED")
     })
-    public ResponseEntity<Tournament> addMatch(@PathVariable String matchId, @PathVariable int round,
-                                               @RequestBody MatchRequest matchRequest) {
+    public ResponseEntity<Match> addMatch(@PathVariable String matchId, @PathVariable int round,
+                                          @RequestBody MatchRequest matchRequest) {
         Long id = Long.valueOf(matchId);
 
-        PlayerEntity player1 = findPlayer(id, matchRequest.getPlayer1Id());
-        PlayerEntity player2 = findPlayer(id, matchRequest.getPlayer2Id());
+        checkPlayer(id, matchRequest.getPlayer1Id());
+        checkPlayer(id, matchRequest.getPlayer2Id());
 
-        matchService.addRound(id, round,
-                player1, matchRequest.getPlayer1Score(),
-                player2, matchRequest.getPlayer2Score());
+        MatchEntity matchEntity = matchService.addRound(id, round, matchRequest.getPlayer1Score(), matchRequest.getPlayer2Score());
 
-        return ResponseEntity.ok().build();
+        Match match = map(matchEntity);
+        return ResponseEntity.ok(match);
     }
 
-    private PlayerEntity findPlayer(Long matchId, Long playerId) {
+    private void checkPlayer(Long matchId, Long playerId) {
         PlayerEntity playerEntity = new PlayerEntity();
         playerEntity.setId(playerId);
-
-        return matchService.find(matchId, playerEntity);
+        matchService.find(matchId, playerEntity);
     }
 }
