@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Team {
+public class Group {
 
     private String name;
 

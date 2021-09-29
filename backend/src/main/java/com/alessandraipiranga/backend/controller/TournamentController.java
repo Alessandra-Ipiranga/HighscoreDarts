@@ -1,7 +1,7 @@
 package com.alessandraipiranga.backend.controller;
 
+import com.alessandraipiranga.backend.api.Group;
 import com.alessandraipiranga.backend.api.Player;
-import com.alessandraipiranga.backend.api.Team;
 import com.alessandraipiranga.backend.api.Tournament;
 import com.alessandraipiranga.backend.model.GroupEntity;
 import com.alessandraipiranga.backend.model.PlayerEntity;
@@ -80,15 +80,15 @@ public class TournamentController {
     }
 
     @PostMapping(
-            value = "/tournament/rounds/{rounds}/teams/{teams}",
+            value = "/tournament/rounds/{rounds}/groups/{groups}",
             produces = APPLICATION_JSON_VALUE
     )
     @ResponseStatus(code = HttpStatus.CREATED)
     @ApiResponses(value = {
             @ApiResponse(code = SC_CREATED, message = "Tournament created")
     })
-    public ResponseEntity<Tournament> createTournament(@PathVariable int rounds, @PathVariable int teams) {
-        TournamentEntity createdTournamentEntity = tournamentService.createTournament(rounds, teams);
+    public ResponseEntity<Tournament> createTournament(@PathVariable int rounds, @PathVariable int groups) {
+        TournamentEntity createdTournamentEntity = tournamentService.createTournament(rounds, groups);
 
         Tournament createdTournament = map(createdTournamentEntity);
 
@@ -109,20 +109,20 @@ public class TournamentController {
         Set<GroupEntity> groups = tournamentEntity.getGroups();
         groups.stream()
                 .map(this::map)
-                .forEach(tournament::addTeam);
+                .forEach(tournament::addGroup);
         return tournament;
     }
 
-    private Team map(GroupEntity groupEntity) {
-        Team team = new Team();
-        team.setName(groupEntity.getName());
+    private Group map(GroupEntity groupEntity) {
+        Group group = new Group();
+        group.setName(groupEntity.getName());
 
         Set<PlayerEntity> playerEntities = groupEntity.getPlayers();
         for (PlayerEntity playerEntity : playerEntities) {
             Player player = map(playerEntity);
-            team.addPlayer(player);
+            group.addPlayer(player);
         }
-        return team;
+        return group;
     }
 
     private Player map(PlayerEntity playerEntity) {

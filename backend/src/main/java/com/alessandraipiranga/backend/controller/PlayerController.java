@@ -58,23 +58,23 @@ public class PlayerController {
     }
 
     @PostMapping(
-            value = "/player/tournament/{tournamentId}/team/{teamName}",
+            value = "/player/tournament/{tournamentId}/group/{groupName}",
             produces = APPLICATION_JSON_VALUE
     )
     @ResponseStatus(code = HttpStatus.CREATED)
     @ApiResponses(value = {
             @ApiResponse(code = SC_CREATED, message = "Player created"),
-            @ApiResponse(code = SC_NOT_FOUND, message = "Tournament or team not found"),
+            @ApiResponse(code = SC_NOT_FOUND, message = "Tournament or group not found"),
             @ApiResponse(code = SC_BAD_REQUEST, message = "Unable to create Player"),
             @ApiResponse(code = SC_CONFLICT, message = "Unable to create Player, player already exists")
     })
     public ResponseEntity<Player> create(@RequestBody Player player,
-                                         @PathVariable String tournamentId, @PathVariable String teamName) {
+                                         @PathVariable String tournamentId, @PathVariable String groupName) {
 
         PlayerEntity playerEntity = new PlayerEntity();
         playerEntity.setName(player.getName());
 
-        PlayerEntity createdPlayerEntity = playerService.create(playerEntity, tournamentId, teamName);
+        PlayerEntity createdPlayerEntity = playerService.create(playerEntity, tournamentId, groupName);
 
         Player createdPlayer = map(createdPlayerEntity);
         URI location = ServletUriComponentsBuilder

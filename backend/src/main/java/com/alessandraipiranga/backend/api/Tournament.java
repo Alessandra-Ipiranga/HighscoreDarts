@@ -17,19 +17,19 @@ public class Tournament {
     @ApiModelProperty(accessMode = AccessMode.READ_ONLY, example = "ZTg2pQ", notes = "Generated id")
     private String id;
 
-    @ApiModelProperty(required = true, example = "1", notes = "Number of rounds to play (Each player against anybody in team)")
+    @ApiModelProperty(required = true, example = "1", notes = "Number of rounds to play (Each player against anybody in group)")
     private int rounds;
 
     @ApiModelProperty(accessMode = AccessMode.READ_ONLY, notes = "Status of the tournament")
     private TournamentStatus status;
 
-    private Set<Team> teams;
+    private Set<Group> groups;
 
-    public void addTeam(Team team) {
-        if (teams == null) {
-            teams = new LinkedHashSet<>();
+    public void addGroup(Group group) {
+        if (groups == null) {
+            groups = new LinkedHashSet<>();
         }
-        teams.add(team);
+        groups.add(group);
     }
 }
 
