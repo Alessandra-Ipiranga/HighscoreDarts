@@ -65,7 +65,7 @@ public class PlayerController {
     @ApiResponses(value = {
             @ApiResponse(code = SC_CREATED, message = "Player created"),
             @ApiResponse(code = SC_NOT_FOUND, message = "Tournament or team not found"),
-            @ApiResponse(code = SC_BAD_REQUEST, message = "Unable to create Player with blank name"),
+            @ApiResponse(code = SC_BAD_REQUEST, message = "Unable to create Player"),
             @ApiResponse(code = SC_CONFLICT, message = "Unable to create Player, player already exists")
     })
     public ResponseEntity<Player> create(@RequestBody Player player,

@@ -18,13 +18,13 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.Optional;
 import java.util.Set;
 
 import static javax.servlet.http.HttpServletResponse.SC_CREATED;
@@ -58,12 +58,26 @@ public class TournamentController {
 
     })
     public ResponseEntity<Tournament> findTournament(@PathVariable String id) {
-        Optional<TournamentEntity> tournamentEntity = tournamentService.find(id);
-        if (tournamentEntity.isPresent()) {
-            Tournament findTournament = map(tournamentEntity.get());
-            return ok(findTournament);
-        }
-        return ResponseEntity.notFound().build();
+        TournamentEntity tournamentEntity = tournamentService.find(id);
+
+        Tournament tournament = map(tournamentEntity);
+        return ok(tournament);
+    }
+
+    @PutMapping(
+            value = "/tournament/{id}/start",
+            produces = APPLICATION_JSON_VALUE
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = SC_OK, message = "Tournament found"),
+            @ApiResponse(code = SC_NOT_FOUND, message = "Tournament not found")
+
+    })
+    public ResponseEntity<Tournament> startTournament(@PathVariable String id) {
+        TournamentEntity tournamentEntity = tournamentService.start(id);
+
+        Tournament tournament = map(tournamentEntity);
+        return ok(tournament);
     }
 
     @PostMapping(

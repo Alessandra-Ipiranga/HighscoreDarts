@@ -4,6 +4,7 @@ import com.alessandraipiranga.backend.model.GroupEntity;
 import com.alessandraipiranga.backend.model.PlayerEntity;
 import com.alessandraipiranga.backend.model.RoundEntity;
 import com.alessandraipiranga.backend.model.TournamentEntity;
+import com.alessandraipiranga.backend.model.TournamentStatus;
 import com.alessandraipiranga.backend.repo.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,11 +33,12 @@ public class PlayerService {
             throw new IllegalArgumentException("Name must not be blank to create Player");
         }
 
-        Optional<TournamentEntity> tournamentOpt = tournamentService.find(tournamentId);
-        if (tournamentOpt.isEmpty()) {
-            throw new EntityNotFoundException("Tournament id=%s not found".formatted(tournamentId));
+        TournamentEntity tournamentEntity = tournamentService.find(tournamentId);
+        if (!TournamentStatus.OPEN.equals(tournamentEntity.getStatus())) {
+            throw new IllegalArgumentException(String.format(
+                    "Adding players to a tournament not allowed in state OPEN, but state is=%s",
+                    tournamentEntity.getStatus()));
         }
-        TournamentEntity tournamentEntity = tournamentOpt.get();
 
         checkPlayerNameExists(tournamentEntity, playerEntity.getName());
 
