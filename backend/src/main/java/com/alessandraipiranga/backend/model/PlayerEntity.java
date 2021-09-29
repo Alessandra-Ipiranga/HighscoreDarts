@@ -1,9 +1,6 @@
 package com.alessandraipiranga.backend.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.CascadeType;
@@ -19,22 +16,21 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "hs_player")
-@Builder(toBuilder = true)
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
 public class PlayerEntity {
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "player_id")
     private final Set<RoundEntity> rounds = new HashSet<>();
+
     @Id
     @GeneratedValue
     @Column(name = "player_id")
     private Long id;
+
     @Column(name = "player_name", nullable = false)
     private String name;
 

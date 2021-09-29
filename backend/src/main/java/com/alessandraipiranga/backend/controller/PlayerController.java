@@ -77,9 +77,8 @@ public class PlayerController {
             @ApiResponse(code = SC_CONFLICT, message = "Unable to create Player, user already exists")
     })
     public ResponseEntity<Player> create(@RequestBody Player player) {
-        PlayerEntity playerEntity = PlayerEntity.builder()
-                .name(player.getName())
-                .build();
+        PlayerEntity playerEntity = new PlayerEntity();
+        player.setName(player.getName());
 
         PlayerEntity createdUserEntity = playerService.create(playerEntity);
 
