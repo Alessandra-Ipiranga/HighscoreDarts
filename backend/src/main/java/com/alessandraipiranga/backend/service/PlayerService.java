@@ -5,6 +5,7 @@ import com.alessandraipiranga.backend.model.PlayerEntity;
 import com.alessandraipiranga.backend.model.TournamentEntity;
 import com.alessandraipiranga.backend.model.TournamentStatus;
 import com.alessandraipiranga.backend.repo.PlayerRepository;
+import com.alessandraipiranga.backend.repo.TournamentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,12 +19,12 @@ import static org.springframework.util.StringUtils.hasText;
 public class PlayerService {
 
     private final PlayerRepository playerRepository;
-    private final TournamentService tournamentService;
+    private final TournamentRepository tournamentRepository;
 
     @Autowired
-    public PlayerService(PlayerRepository playerRepository, TournamentService tournamentService) {
+    public PlayerService(PlayerRepository playerRepository, TournamentRepository tournamentRepository) {
         this.playerRepository = playerRepository;
-        this.tournamentService = tournamentService;
+        this.tournamentRepository = tournamentRepository;
     }
 
     public PlayerEntity create(PlayerEntity playerEntity, String tournamentId, String groupName) {
@@ -32,7 +33,7 @@ public class PlayerService {
             throw new IllegalArgumentException("Name must not be blank to create Player");
         }
 
-        TournamentEntity tournamentEntity = tournamentService.find(tournamentId);
+        TournamentEntity tournamentEntity = findTournament(tournamentId);
         if (!TournamentStatus.OPEN.equals(tournamentEntity.getStatus())) {
             throw new IllegalArgumentException(String.format(
                     "Adding players to a tournament not allowed in state OPEN, but state is=%s",
@@ -51,7 +52,7 @@ public class PlayerService {
             throw new EntityNotFoundException("Group name=%s not found".formatted(groupName));
         }
 
-        tournamentEntity = tournamentService.save(tournamentEntity);
+        tournamentEntity = tournamentRepository.save(tournamentEntity);
         return find(tournamentEntity.getTournamentId(), playerEntity);
     }
 
@@ -67,7 +68,7 @@ public class PlayerService {
     }
 
     public PlayerEntity find(String tournamentId, PlayerEntity playerEntity) {
-        TournamentEntity tournamentEntity = tournamentService.find(tournamentId);
+        TournamentEntity tournamentEntity = findTournament(tournamentId);
 
         Optional<GroupEntity> playerGroupOpt = tournamentEntity.getGroupPlayer(playerEntity);
         if (playerGroupOpt.isPresent()) {
@@ -84,6 +85,14 @@ public class PlayerService {
                         playerEntity.getId(), tournamentEntity.getId()));
     }
 
+    private TournamentEntity findTournament(String tournamentId) {
+        Optional<TournamentEntity> tournamentEntityOptional = tournamentRepository.findByTournamentId(tournamentId);
+        if (tournamentEntityOptional.isPresent()) {
+            return tournamentEntityOptional.get();
+        }
+        throw new EntityNotFoundException("Tournament id=%s not found".formatted(tournamentId));
+    }
+
     public PlayerEntity find(Long id) {
         Optional<PlayerEntity> playerEntityOptional = playerRepository.findById(id);
         if (playerEntityOptional.isEmpty()) {
@@ -94,6 +103,17 @@ public class PlayerService {
 
     public PlayerEntity delete(Long id) {
         PlayerEntity playerEntity = find(id);
+
+        Optional<TournamentEntity> tournamentEntityOptional = tournamentRepository.findByPlayerId(playerEntity.getId());
+        if (tournamentEntityOptional.isPresent()) {
+            TournamentEntity tournamentEntity = tournamentEntityOptional.get();
+            if (!TournamentStatus.OPEN.equals(tournamentEntity.getStatus())) {
+                throw new IllegalArgumentException(String.format(
+                        "Player id=%d must not been deleted from tournament id=%s in state=%s",
+                        playerEntity.getId(), tournamentEntity.getTournamentId(), tournamentEntity.getStatus()));
+            }
+        }
+
         playerRepository.delete(playerEntity);
         return playerEntity;
     }
