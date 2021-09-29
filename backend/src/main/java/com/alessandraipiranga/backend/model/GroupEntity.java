@@ -13,9 +13,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -41,12 +45,45 @@ public class GroupEntity {
     @Column(name = "group_name", nullable = false)
     private String name;
 
+    @OneToOne
+    private PlayerEntity winner;
+
+    private Integer winnerScore;
+
     public void addPlayer(PlayerEntity playerEntity) {
         players.add(playerEntity);
     }
 
     public void addMatches(Collection<MatchEntity> matchEntities) {
         matches.addAll(matchEntities);
+    }
+
+    @Transient
+    public void selectWinner() {
+        Map<PlayerEntity, Integer> playerScores = new HashMap<>();
+        for (MatchEntity matchEntity : getMatches()) {
+            Integer player1TotalScore =
+                    playerScores.computeIfAbsent(matchEntity.getPlayer1(), key -> 0);
+
+            player1TotalScore += matchEntity.getPlayer1TotalScore();
+            playerScores.put(matchEntity.getPlayer1(), player1TotalScore);
+
+            Integer player2TotalScore =
+                    playerScores.computeIfAbsent(matchEntity.getPlayer2(), key -> 0);
+
+            player2TotalScore += matchEntity.getPlayer2TotalScore();
+            playerScores.put(matchEntity.getPlayer2(), player2TotalScore);
+        }
+
+        for (Map.Entry<PlayerEntity, Integer> playerScore : playerScores.entrySet()) {
+            PlayerEntity winningPlayer = playerScore.getKey();
+            Integer winningScore = playerScore.getValue();
+
+            if (getWinnerScore() == null || getWinnerScore() < winningScore) {
+                setWinnerScore(winningScore);
+                setWinner(winningPlayer);
+            }
+        }
     }
 
     @Override

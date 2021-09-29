@@ -76,6 +76,23 @@ public class TournamentController extends ControllerBase {
         return ok(tournament);
     }
 
+    @PutMapping(
+            value = "/tournament/{id}/finish",
+            produces = APPLICATION_JSON_VALUE
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = SC_OK, message = "Tournament found"),
+            @ApiResponse(code = SC_BAD_REQUEST, message = "Tournament cannot be finish"),
+            @ApiResponse(code = SC_NOT_FOUND, message = "Tournament not found"),
+            @ApiResponse(code = SC_CONFLICT, message = "Tournament cannot be finish")
+    })
+    public ResponseEntity<Tournament> finishTournament(@PathVariable String id) {
+        TournamentEntity tournamentEntity = tournamentService.finish(id);
+
+        Tournament tournament = map(tournamentEntity);
+        return ok(tournament);
+    }
+
     @PostMapping(
             value = "/tournament/rounds/{rounds}/groups/{groups}",
             produces = APPLICATION_JSON_VALUE

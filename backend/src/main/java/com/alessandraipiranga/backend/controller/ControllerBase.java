@@ -21,6 +21,11 @@ public abstract class ControllerBase {
         tournament.setId(tournamentEntity.getTournamentId());
         tournament.setRounds(tournamentEntity.getRounds());
         tournament.setStatus(tournamentEntity.getStatus());
+        Player winner = map(tournamentEntity.getWinner());
+        if (winner != null) {
+            tournament.setWinner(winner);
+            tournament.setWinnerScore(tournamentEntity.getWinnerScore());
+        }
 
         Set<GroupEntity> groups = tournamentEntity.getGroups();
         groups.stream()
@@ -33,6 +38,12 @@ public abstract class ControllerBase {
     private Group map(GroupEntity groupEntity) {
         Group group = new Group();
         group.setName(groupEntity.getName());
+
+        Player winner = map(groupEntity.getWinner());
+        if (winner != null) {
+            group.setWinner(winner);
+            group.setWinnerScore(groupEntity.getWinnerScore());
+        }
 
         Set<PlayerEntity> playerEntities = groupEntity.getPlayers();
         for (PlayerEntity playerEntity : playerEntities) {
@@ -49,6 +60,9 @@ public abstract class ControllerBase {
     }
 
     private Player map(PlayerEntity playerEntity) {
+        if (playerEntity == null) {
+            return null;
+        }
         Player player = new Player();
         player.setId(playerEntity.getId());
         player.setName(playerEntity.getName());

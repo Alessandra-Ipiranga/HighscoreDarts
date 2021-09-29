@@ -16,6 +16,10 @@ public class Group {
 
     private Set<Match> matches;
 
+    private Player winner;
+
+    private Integer winnerScore;
+
     public void addPlayer(Player player) {
         if (players == null) {
             players = new LinkedHashSet<>();

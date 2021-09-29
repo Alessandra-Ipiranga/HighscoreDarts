@@ -110,4 +110,27 @@ public class TournamentService {
 
         return tournamentId;
     }
+
+    public TournamentEntity finish(String tournamentId) {
+        TournamentEntity tournamentEntity = find(tournamentId);
+        if (TournamentStatus.FINISHED.equals(tournamentEntity.getStatus())) {
+            // no nothing, tournament already finished
+            return tournamentEntity;
+        }
+        if (!TournamentStatus.STARTED.equals(tournamentEntity.getStatus())) {
+            throw new IllegalArgumentException(String.format(
+                    "Unable to finish tournament id=%s tournament in state=%s",
+                    tournamentEntity.getTournamentId(), tournamentEntity.getStatus()));
+        }
+
+        Set<GroupEntity> groupEntities = tournamentEntity.getGroups();
+        for (GroupEntity groupEntity : groupEntities) {
+            groupEntity.selectWinner();
+        }
+
+        tournamentEntity.selectWinner();
+
+        tournamentEntity.setStatus(TournamentStatus.FINISHED);
+        return save(tournamentEntity);
+    }
 }
