@@ -8,7 +8,7 @@ import {useState} from "react";
 
 export default function App() {
 
-    const [tournament, setTournament] = useState();
+    const [setTournament] = useState();
 
     return (
         <Router>
