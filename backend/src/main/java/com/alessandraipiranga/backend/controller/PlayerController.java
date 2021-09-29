@@ -87,13 +87,14 @@ public class PlayerController {
 
     @PutMapping(
             value = "/player/{id}",
-            produces = APPLICATION_JSON_VALUE
+            produces = APPLICATION_JSON_VALUE,
+            consumes = APPLICATION_JSON_VALUE
     )
     @ApiResponses(value = {
             @ApiResponse(code = SC_OK, message = "Player updated"),
             @ApiResponse(code = SC_NOT_FOUND, message = "Player not found")
     })
-    public ResponseEntity<Player> update(@PathVariable Long id, Player player) {
+    public ResponseEntity<Player> update(@PathVariable Long id, @RequestBody Player player) {
         String name = player.getName();
         Assert.hasText(name, "Player name must not be blank to update");
 
