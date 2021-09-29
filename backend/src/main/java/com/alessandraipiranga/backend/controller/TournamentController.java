@@ -87,7 +87,7 @@ public class TournamentController {
     @ApiResponses(value = {
             @ApiResponse(code = SC_CREATED, message = "Tournament created")
     })
-    public ResponseEntity<Tournament> createTournament(@PathVariable int rounds, int teams) {
+    public ResponseEntity<Tournament> createTournament(@PathVariable int rounds, @PathVariable int teams) {
         TournamentEntity createdTournamentEntity = tournamentService.createTournament(rounds, teams);
 
         Tournament createdTournament = map(createdTournamentEntity);
