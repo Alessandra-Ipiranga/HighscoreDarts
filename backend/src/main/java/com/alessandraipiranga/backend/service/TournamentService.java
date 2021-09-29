@@ -31,7 +31,7 @@ public class TournamentService {
         tournamentEntity.setStatus(OPEN);
         tournamentEntity.setRounds(rounds);
 
-        for(int i = 1; i <= groups; i++){
+        for (int i = 1; i <= groups; i++) {
             GroupEntity groupEntity = new GroupEntity();
             groupEntity.setName(String.valueOf(i));
             tournamentEntity.addGroup(groupEntity);
@@ -39,7 +39,7 @@ public class TournamentService {
         return tournamentRepository.save(tournamentEntity);
     }
 
-    private String getNewTournamentId(){
+    private String getNewTournamentId() {
         return RandomStringUtils.randomAlphanumeric(6);
     }
 }

@@ -9,7 +9,14 @@ import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
@@ -17,7 +24,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.lang.String.format;
-import static javax.servlet.http.HttpServletResponse.*;
+import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
+import static javax.servlet.http.HttpServletResponse.SC_CONFLICT;
+import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import static org.springframework.http.ResponseEntity.notFound;
 import static org.springframework.http.ResponseEntity.ok;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
@@ -29,7 +38,7 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 public class PlayerController {
 
     public static final String PLAYER_CONTROLLER_TAG = "Player";
-    private PlayerService playerService;
+    private final PlayerService playerService;
 
     @Autowired
     public PlayerController(PlayerService playerService) {
@@ -37,29 +46,29 @@ public class PlayerController {
     }
 
     @GetMapping("/{name}")
-    public ResponseEntity<Player> findPlayer(@PathVariable String name){
+    public ResponseEntity<Player> findPlayer(@PathVariable String name) {
         PlayerEntity playerEntity = playerService.findPlayer(name);
         Player findPlayer = map(playerEntity);
         return ok(findPlayer);
     }
 
     @GetMapping()
-    public ResponseEntity<List<Player>> findAllPlayer(){
+    public ResponseEntity<List<Player>> findAllPlayer() {
         List<PlayerEntity> playerEntityList = playerService.findAllPlayer();
-        List <Player> playerList = map(playerEntityList);
+        List<Player> playerList = map(playerEntityList);
         return ok(playerList);
     }
 
-    public List<Player> map(List<PlayerEntity> playerEntityList){
+    public List<Player> map(List<PlayerEntity> playerEntityList) {
 
         List<Player> playerList = new ArrayList<>();
 
-        for(PlayerEntity playerEntity :playerEntityList){
+        for (PlayerEntity playerEntity : playerEntityList) {
             Player player = map(playerEntity);
             playerList.add(player);
 
         }
-        return(playerList);
+        return (playerList);
     }
 
     @PostMapping

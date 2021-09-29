@@ -46,9 +46,10 @@ public class PlayerService {
 
     public PlayerEntity findPlayer(String name) {
         Optional<PlayerEntity> playerEntityOptional = playerRepository.findByName(name);
-        if(playerEntityOptional.isEmpty()){
+        if (playerEntityOptional.isEmpty()) {
             throw new EntityNotFoundException("Player not found");
-        } return playerEntityOptional.get();
+        }
+        return playerEntityOptional.get();
     }
 
     public List<PlayerEntity> findAllPlayer() {
