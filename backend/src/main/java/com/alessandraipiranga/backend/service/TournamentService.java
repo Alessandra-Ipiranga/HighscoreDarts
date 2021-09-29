@@ -21,13 +21,13 @@ public class TournamentService {
         this.tournamentRepository = tournamentRepository;
     }
 
-    public Optional<TournamentEntity> findTournamentById(String id) {
-        return tournamentRepository.findById(id);
+    public Optional<TournamentEntity> find(String tournamentId) {
+        return tournamentRepository.findByTournamentId(tournamentId);
     }
 
     public TournamentEntity createTournament(int groups, int rounds) {
         TournamentEntity tournamentEntity = new TournamentEntity();
-        tournamentEntity.setId(getNewTournamentId());
+        tournamentEntity.setTournamentId(createTournamentId());
         tournamentEntity.setStatus(OPEN);
         tournamentEntity.setRounds(rounds);
 
@@ -39,7 +39,17 @@ public class TournamentService {
         return tournamentRepository.save(tournamentEntity);
     }
 
-    private String getNewTournamentId() {
-        return RandomStringUtils.randomAlphanumeric(6);
+    private String createTournamentId() {
+        String tournamentId;
+
+        Optional<TournamentEntity> tournamentByIdOpt;
+        do {
+            // ensire
+            tournamentId = RandomStringUtils.randomAlphanumeric(6);
+            tournamentByIdOpt = find(tournamentId);
+
+        } while (tournamentByIdOpt.isPresent());
+
+        return tournamentId;
     }
 }

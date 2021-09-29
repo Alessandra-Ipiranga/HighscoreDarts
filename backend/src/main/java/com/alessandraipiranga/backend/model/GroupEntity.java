@@ -47,11 +47,16 @@ public class GroupEntity {
         }
 
         GroupEntity that = (GroupEntity) o;
-        return new EqualsBuilder().append(id, that.id).isEquals();
+        if (id != null && that.id != null) {
+            return new EqualsBuilder().append(id, that.id).isEquals();
+        }
+        return new EqualsBuilder().append(name, that.name).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(id).toHashCode();
+        return new HashCodeBuilder()
+                .append(name)
+                .append(id).toHashCode();
     }
 }

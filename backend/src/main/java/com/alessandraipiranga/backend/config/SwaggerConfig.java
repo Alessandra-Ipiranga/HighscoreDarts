@@ -19,7 +19,8 @@ public class SwaggerConfig {
                 .apis(RequestHandlerSelectors.basePackage("com.alessandraipiranga.backend"))
                 .paths(PathSelectors.any())
                 .build()
-                .apiInfo(getApiInfo());
+                .apiInfo(getApiInfo())
+                .useDefaultResponseMessages(Boolean.FALSE);
     }
 
     private ApiInfo getApiInfo() {
