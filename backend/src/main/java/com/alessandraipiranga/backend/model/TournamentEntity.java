@@ -17,7 +17,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.LinkedHashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Entity
@@ -47,6 +49,16 @@ public class TournamentEntity {
 
     public void addGroup(GroupEntity groupEntity) {
         groups.add(groupEntity);
+    }
+
+    @Transient
+    public Optional<GroupEntity> getGroupPlayer(PlayerEntity playerEntity) {
+        for (GroupEntity groupEntity : groups) {
+            if (groupEntity.getPlayers().contains(playerEntity)) {
+                return Optional.of(groupEntity);
+            }
+        }
+        return Optional.empty();
     }
 
     @Override

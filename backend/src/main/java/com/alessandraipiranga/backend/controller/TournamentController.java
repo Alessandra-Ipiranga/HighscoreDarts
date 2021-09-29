@@ -1,8 +1,10 @@
 package com.alessandraipiranga.backend.controller;
 
+import com.alessandraipiranga.backend.api.Player;
 import com.alessandraipiranga.backend.api.Team;
 import com.alessandraipiranga.backend.api.Tournament;
 import com.alessandraipiranga.backend.model.GroupEntity;
+import com.alessandraipiranga.backend.model.PlayerEntity;
 import com.alessandraipiranga.backend.model.TournamentEntity;
 import com.alessandraipiranga.backend.service.TournamentService;
 import io.swagger.annotations.Api;
@@ -81,9 +83,9 @@ public class TournamentController {
         Tournament createdTournament = map(createdTournamentEntity);
 
         URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(createdTournament.getId())
+                .fromCurrentContextPath()
+                .path("/tournament/%s".formatted(createdTournament.getId()))
+                .build()
                 .toUri();
         return ResponseEntity.created(location).body(createdTournament);
     }
@@ -104,7 +106,19 @@ public class TournamentController {
     private Team map(GroupEntity groupEntity) {
         Team team = new Team();
         team.setName(groupEntity.getName());
-        team.setId(groupEntity.getId());
+
+        Set<PlayerEntity> playerEntities = groupEntity.getPlayers();
+        for (PlayerEntity playerEntity : playerEntities) {
+            Player player = map(playerEntity);
+            team.addPlayer(player);
+        }
         return team;
+    }
+
+    private Player map(PlayerEntity playerEntity) {
+        Player player = new Player();
+        player.setId(playerEntity.getId());
+        player.setName(playerEntity.getName());
+        return player;
     }
 }

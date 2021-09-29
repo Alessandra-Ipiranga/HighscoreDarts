@@ -25,7 +25,7 @@ public class TournamentService {
         return tournamentRepository.findByTournamentId(tournamentId);
     }
 
-    public TournamentEntity createTournament(int groups, int rounds) {
+    public TournamentEntity createTournament(int rounds, int groups) {
         TournamentEntity tournamentEntity = new TournamentEntity();
         tournamentEntity.setTournamentId(createTournamentId());
         tournamentEntity.setStatus(OPEN);
@@ -37,6 +37,10 @@ public class TournamentService {
             tournamentEntity.addGroup(groupEntity);
         }
         return tournamentRepository.save(tournamentEntity);
+    }
+
+    public TournamentEntity save(TournamentEntity tournament) {
+        return tournamentRepository.save(tournament);
     }
 
     private String createTournamentId() {
