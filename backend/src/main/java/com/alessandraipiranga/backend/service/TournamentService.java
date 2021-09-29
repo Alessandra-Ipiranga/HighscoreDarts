@@ -1,6 +1,8 @@
 package com.alessandraipiranga.backend.service;
 
 import com.alessandraipiranga.backend.model.GroupEntity;
+import com.alessandraipiranga.backend.model.MatchEntity;
+import com.alessandraipiranga.backend.model.PlayerEntity;
 import com.alessandraipiranga.backend.model.TournamentEntity;
 import com.alessandraipiranga.backend.model.TournamentStatus;
 import com.alessandraipiranga.backend.repo.TournamentRepository;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.alessandraipiranga.backend.model.TournamentStatus.OPEN;
 
@@ -17,10 +20,12 @@ import static com.alessandraipiranga.backend.model.TournamentStatus.OPEN;
 public class TournamentService {
 
     public final TournamentRepository tournamentRepository;
+    public final MatchService matchService;
 
     @Autowired
-    public TournamentService(TournamentRepository tournamentRepository) {
+    public TournamentService(TournamentRepository tournamentRepository, MatchService matchService) {
         this.tournamentRepository = tournamentRepository;
+        this.matchService = matchService;
     }
 
     public TournamentEntity find(String tournamentId) {
@@ -32,6 +37,13 @@ public class TournamentService {
     }
 
     public TournamentEntity createTournament(int rounds, int groups) {
+        if (rounds < 1) {
+            throw new IllegalArgumentException("A tournament requires at least 1 round to play");
+        }
+        if (groups < 1) {
+            throw new IllegalArgumentException("A tournament requires at least 1 group to assign players to");
+        }
+
         TournamentEntity tournamentEntity = new TournamentEntity();
         tournamentEntity.setTournamentId(createTournamentId());
         tournamentEntity.setStatus(OPEN);
@@ -51,16 +63,38 @@ public class TournamentService {
 
     public TournamentEntity start(String tournamentId) {
         TournamentEntity tournamentEntity = find(tournamentId);
-        if (TournamentStatus.OPEN.equals(tournamentEntity.getStatus())) {
-            tournamentEntity.setStatus(TournamentStatus.STARTED);
-            return save(tournamentEntity);
-        }
         if (TournamentStatus.STARTED.equals(tournamentEntity.getStatus())) {
+            // no nothing, tournament already started
             return tournamentEntity;
         }
-        throw new IllegalArgumentException(String.format(
-                "Unable to start tournament id=%s tournament in state=%s",
-                tournamentEntity.getTournamentId(), tournamentEntity.getStatus()));
+        if (!TournamentStatus.OPEN.equals(tournamentEntity.getStatus())) {
+            throw new IllegalArgumentException(String.format(
+                    "Unable to start tournament id=%s tournament in state=%s",
+                    tournamentEntity.getTournamentId(), tournamentEntity.getStatus()));
+        }
+
+        Set<GroupEntity> groupEntities = tournamentEntity.getGroups();
+        for (GroupEntity groupEntity : groupEntities) {
+            Set<PlayerEntity> players = groupEntity.getPlayers();
+            if (players.isEmpty()) {
+                // remove empty group, after starting a tournament no player can join
+                tournamentEntity.removeGroup(groupEntity);
+                continue;
+            }
+            if (players.size() < 2) {
+                throw new IllegalStateException(
+                        String.format("A match requires at least 2 players. Add more players to group name=%s",
+                                groupEntity.getName()));
+            }
+
+            int rounds = tournamentEntity.getRounds();
+
+            Set<MatchEntity> matches = matchService.createMatches(players, rounds);
+            groupEntity.addMatches(matches);
+        }
+
+        tournamentEntity.setStatus(TournamentStatus.STARTED);
+        return save(tournamentEntity);
     }
 
     private String createTournamentId() {
@@ -75,5 +109,28 @@ public class TournamentService {
         } while (tournamentByIdOpt.isPresent());
 
         return tournamentId;
+    }
+
+    public TournamentEntity finish(String tournamentId) {
+        TournamentEntity tournamentEntity = find(tournamentId);
+        if (TournamentStatus.FINISHED.equals(tournamentEntity.getStatus())) {
+            // no nothing, tournament already finished
+            return tournamentEntity;
+        }
+        if (!TournamentStatus.STARTED.equals(tournamentEntity.getStatus())) {
+            throw new IllegalArgumentException(String.format(
+                    "Unable to finish tournament id=%s tournament in state=%s",
+                    tournamentEntity.getTournamentId(), tournamentEntity.getStatus()));
+        }
+
+        Set<GroupEntity> groupEntities = tournamentEntity.getGroups();
+        for (GroupEntity groupEntity : groupEntities) {
+            groupEntity.selectWinner();
+        }
+
+        tournamentEntity.selectWinner();
+
+        tournamentEntity.setStatus(TournamentStatus.FINISHED);
+        return save(tournamentEntity);
     }
 }

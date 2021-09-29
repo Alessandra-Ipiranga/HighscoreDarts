@@ -19,7 +19,7 @@ import javax.persistence.EntityNotFoundException;
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({
-            IllegalArgumentException.class
+            IllegalArgumentException.class, NumberFormatException.class
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<RestException> handle400(Throwable e) {
@@ -35,7 +35,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler({
-            EntityExistsException.class
+            EntityExistsException.class, IllegalStateException.class
     })
     @ResponseStatus(HttpStatus.CONFLICT)
     public ResponseEntity<RestException> handle409(Throwable e) {

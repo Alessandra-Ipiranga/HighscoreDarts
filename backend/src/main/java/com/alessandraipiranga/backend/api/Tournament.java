@@ -25,6 +25,10 @@ public class Tournament {
 
     private Set<Group> groups;
 
+    private Player winner;
+
+    private Integer winnerScore;
+
     public void addGroup(Group group) {
         if (groups == null) {
             groups = new LinkedHashSet<>();

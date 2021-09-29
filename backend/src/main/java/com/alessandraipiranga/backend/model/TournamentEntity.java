@@ -16,9 +16,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -28,7 +31,7 @@ import java.util.Set;
 @Table(name = "hs_tournament")
 public class TournamentEntity {
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "tournament_id")
     private final Set<GroupEntity> groups = new LinkedHashSet<>();
 
@@ -47,8 +50,17 @@ public class TournamentEntity {
     @Column(name = "tournament_rounds", nullable = false)
     private int rounds;
 
+    @OneToOne
+    private PlayerEntity winner;
+
+    private Integer winnerScore;
+
     public void addGroup(GroupEntity groupEntity) {
         groups.add(groupEntity);
+    }
+
+    public void removeGroup(GroupEntity group) {
+        groups.removeIf(groupEntity -> groupEntity.equals(group));
     }
 
     @Transient
@@ -79,5 +91,26 @@ public class TournamentEntity {
     @Override
     public int hashCode() {
         return new HashCodeBuilder().append(tournamentId).toHashCode();
+    }
+
+    public void selectWinner() {
+        Map<PlayerEntity, Integer> playerScores = new HashMap<>();
+        for (GroupEntity groupEntity : getGroups()) {
+            Integer winnerScore =
+                    playerScores.computeIfAbsent(groupEntity.getWinner(), key -> 0);
+
+            winnerScore += groupEntity.getWinnerScore();
+            playerScores.put(groupEntity.getWinner(), winnerScore);
+        }
+
+        for (Map.Entry<PlayerEntity, Integer> playerScore : playerScores.entrySet()) {
+            PlayerEntity winningPlayer = playerScore.getKey();
+            Integer winningScore = playerScore.getValue();
+
+            if (getWinnerScore() == null || getWinnerScore() < winningScore) {
+                setWinnerScore(winningScore);
+                setWinner(winningPlayer);
+            }
+        }
     }
 }
