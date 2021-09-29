@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -81,18 +80,15 @@ public class TournamentController {
     }
 
     @PostMapping(
-            value = "/tournament",
-            consumes = APPLICATION_JSON_VALUE,
+            value = "/tournament/rounds/{rounds}/teams/{teams}",
             produces = APPLICATION_JSON_VALUE
     )
     @ResponseStatus(code = HttpStatus.CREATED)
     @ApiResponses(value = {
             @ApiResponse(code = SC_CREATED, message = "Tournament created")
     })
-    public ResponseEntity<Tournament> createTournament(@RequestBody Tournament tournament) {
-        int rounds = tournament.getRounds();
-        int groups = tournament.getGroups();
-        TournamentEntity createdTournamentEntity = tournamentService.createTournament(rounds, groups);
+    public ResponseEntity<Tournament> createTournament(@PathVariable int rounds, int teams) {
+        TournamentEntity createdTournamentEntity = tournamentService.createTournament(rounds, teams);
 
         Tournament createdTournament = map(createdTournamentEntity);
 
