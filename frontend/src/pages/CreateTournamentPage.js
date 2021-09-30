@@ -6,56 +6,64 @@ import Input from "../components/Input"
 import Label from "../components/Label";
 import Page from "../components/Page";
 import WarningTag from "../components/WarningTag";
-import {Link} from "react-router-dom";
 import {postTournament} from "../service/api-service";
 import {useState} from "react";
+import {useHistory} from "react-router";
 
 const initialState = {
     groups: "",
     rounds: "",
 }
 
-export default function TournamentPage() {
+export default function CreateTournamentPage(props) {
 
     const [tournament, setTournament] = useState(initialState)
 
+    const history = useHistory();
+
     const handleNumberChange = event =>
         setTournament({...tournament, [event.target.name]: event.target.value})
-
     const clear = (event) => {
         event.preventDefault()
         setTournament(initialState)
+
+    }
+    const handleSubmit = (event) => {
+        event.preventDefault()
+        postTournament(tournament)
+            .then(props.setTournament)
+            .then( () => history.push("/groups"))
+            .catch(error => console.log(error))
+
     }
 
-    const handleClick = () => {
-        postTournament(tournament.rounds)
-            .catch(error => console.log(error))
-    }
+    const validInput = (tournament.groups <= 20 && tournament.groups > 0) && (tournament.rounds <= 20 && tournament.rounds > 0)
+    const inputInRange = (tournament.groups < 0 || tournament.groups > 20) || (tournament.rounds < 0 || tournament.rounds > 20)
 
     return (
         <Page>
             <div>
                 <Header/>
-                <Form>
+                <Form onSubmit={handleSubmit}>
                     <Label>Bitte geben Sie die Anzahl der Gruppen ein! </Label>
-                    <Input
-                        type="number"
-                        name="groups"
-                        value={tournament.groups}
-                        onChange={handleNumberChange}
-                    />
-                    <Label>Bitte geben Sie die Anzahl der Runden ein! </Label>
                     <Input
                         type="number"
                         name="rounds"
                         value={tournament.rounds}
                         onChange={handleNumberChange}
                     />
+                    <Label>Bitte geben Sie die Anzahl der Runden ein! </Label>
+                    <Input
+                        type="number"
+                        name="groups"
+                        value={tournament.groups}
+                        onChange={handleNumberChange}
+                    />
                     <ButtonGroup>
-                        {((tournament.groups <= 20 && tournament.groups > 0) && (tournament.rounds <= 20 && tournament.rounds > 0)) ?
-                            <Button onClick={handleClick}><Link to={`/groups/${tournament.groups}`}>Turnier erzeugen</Link>
-                            </Button> : <p>Bitte alle Felder ausfüllen!</p>}
-                        {(((tournament.groups < 0 || tournament.groups > 20) || (tournament.rounds < 0 || tournament.rounds > 20))) &&
+                        {(validInput) ?
+                            <Button>Turnier erzeugen</Button> :
+                            <p>Bitte alle Felder ausfüllen!</p>}
+                        {((inputInRange)) &&
                         <WarningTag>Zahl nicht zulässig! <br/> Bitte überprüfen Sie Ihre Eingabe!</WarningTag>}
                         <Button type="button" onClick={clear}>Clear</Button>
                     </ButtonGroup>
