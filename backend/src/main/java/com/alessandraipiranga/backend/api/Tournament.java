@@ -23,10 +23,13 @@ public class Tournament {
     @ApiModelProperty(accessMode = AccessMode.READ_ONLY, notes = "Status of the tournament")
     private TournamentStatus status;
 
+    @ApiModelProperty(notes = "Tournament groups")
     private Set<Group> groups;
 
+    @ApiModelProperty(notes = "Tournament winner")
     private Player winner;
 
+    @ApiModelProperty(notes = "Total score of the tournament winner")
     private Integer winnerScore;
 
     public void addGroup(Group group) {

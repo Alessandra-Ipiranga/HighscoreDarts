@@ -9,11 +9,9 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Round {
 
-    @ApiModelProperty(notes = "Score of the first player")
-    private Integer player1Score;
+    @ApiModelProperty(notes = "Scores of the players in one round")
+    private Score score;
 
-    @ApiModelProperty(notes = "Score of the second player")
-    private Integer player2Score;
-
+    @ApiModelProperty(notes = "Number of the round")
     private int number;
 }

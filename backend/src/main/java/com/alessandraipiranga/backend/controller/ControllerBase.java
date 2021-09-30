@@ -4,6 +4,7 @@ import com.alessandraipiranga.backend.api.Group;
 import com.alessandraipiranga.backend.api.Match;
 import com.alessandraipiranga.backend.api.Player;
 import com.alessandraipiranga.backend.api.Round;
+import com.alessandraipiranga.backend.api.Score;
 import com.alessandraipiranga.backend.api.Tournament;
 import com.alessandraipiranga.backend.model.GroupEntity;
 import com.alessandraipiranga.backend.model.MatchEntity;
@@ -87,10 +88,19 @@ public abstract class ControllerBase {
         for (RoundEntity roundEntity : roundEntities) {
             Round round = new Round();
             round.setNumber(roundEntity.getNumber());
-            round.setPlayer1Score(roundEntity.getPlayer1Score());
-            round.setPlayer2Score(roundEntity.getPlayer2Score());
+
+            Score score = map(roundEntity);
+            round.setScore(score);
+
             rounds.add(round);
         }
         return rounds;
+    }
+
+    private Score map(RoundEntity roundEntity) {
+        Score score = new Score();
+        score.setPlayer1Score(roundEntity.getPlayer1Score());
+        score.setPlayer2Score(roundEntity.getPlayer2Score());
+        return score;
     }
 }
