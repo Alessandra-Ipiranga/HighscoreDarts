@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -73,7 +74,7 @@ public class TournamentService {
                     tournamentEntity.getTournamentId(), tournamentEntity.getStatus()));
         }
 
-        Set<GroupEntity> groupEntities = tournamentEntity.getGroups();
+        Set<GroupEntity> groupEntities = new LinkedHashSet<>(tournamentEntity.getGroups());
         for (GroupEntity groupEntity : groupEntities) {
             Set<PlayerEntity> players = groupEntity.getPlayers();
             if (players.isEmpty()) {
