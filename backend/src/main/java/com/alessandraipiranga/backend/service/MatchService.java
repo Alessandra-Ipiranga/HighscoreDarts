@@ -79,7 +79,7 @@ public class MatchService {
         return factorial(playersSize) / (2 * factorial(playersSize - 2));
     }
 
-    public MatchEntity addRound(Long id, int round, int scorePlayer1, int scorePlayer2) {
+    public MatchEntity addRound(Long id, int round, Integer scorePlayer1, Integer scorePlayer2) {
         MatchEntity matchEntity = find(id);
 
         checkScore(scorePlayer1);
@@ -103,18 +103,26 @@ public class MatchService {
                     String.format("Round must in between 1 and %d but was %d", tournamentEntityRounds, round));
         }
 
-        Set<RoundEntity> roundEntities = matchEntity.getRounds();
-        for (RoundEntity roundEntity : roundEntities) {
-            if (roundEntity.getNumber() == round) {
-                roundEntity.setPlayer1Score(scorePlayer1);
-                roundEntity.setPlayer2Score(scorePlayer2);
-            }
-        }
+        updateScores(matchEntity, round, scorePlayer2, scorePlayer1);
         return matchRepository.save(matchEntity);
     }
 
-    private void checkScore(int score) {
-        if (score < 0 || score > 180) {
+    private void updateScores(MatchEntity matchEntity, int round, Integer scorePlayer2, Integer scorePlayer1) {
+        Set<RoundEntity> roundEntities = matchEntity.getRounds();
+        for (RoundEntity roundEntity : roundEntities) {
+            if (roundEntity.getNumber() == round) {
+                if (scorePlayer1 != null) {
+                    roundEntity.setPlayer1Score(scorePlayer1);
+                }
+                if (scorePlayer2 != null) {
+                    roundEntity.setPlayer2Score(scorePlayer2);
+                }
+            }
+        }
+    }
+
+    private void checkScore(Integer score) {
+        if (score != null && (score < 0 || score > 180)) {
             throw new IllegalArgumentException(String.format("Score must in between 0 and 180 but was %d", score));
         }
     }

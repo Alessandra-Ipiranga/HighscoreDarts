@@ -1,7 +1,7 @@
 package com.alessandraipiranga.backend.controller;
 
 import com.alessandraipiranga.backend.api.Match;
-import com.alessandraipiranga.backend.api.MatchRequest;
+import com.alessandraipiranga.backend.api.Score;
 import com.alessandraipiranga.backend.model.MatchEntity;
 import com.alessandraipiranga.backend.service.MatchService;
 import io.swagger.annotations.Api;
@@ -53,10 +53,10 @@ public class MatchController extends ControllerBase {
             @ApiResponse(code = SC_CONFLICT, message = "Tournament not in status STARTED")
     })
     public ResponseEntity<Match> addMatch(@PathVariable String matchId, @PathVariable int round,
-                                          @RequestBody MatchRequest matchRequest) {
+                                          @RequestBody Score score) {
         Long id = Long.valueOf(matchId);
 
-        MatchEntity matchEntity = matchService.addRound(id, round, matchRequest.getPlayer1Score(), matchRequest.getPlayer2Score());
+        MatchEntity matchEntity = matchService.addRound(id, round, score.getPlayer1Score(), score.getPlayer2Score());
 
         Match match = map(matchEntity);
         return ResponseEntity.ok(match);

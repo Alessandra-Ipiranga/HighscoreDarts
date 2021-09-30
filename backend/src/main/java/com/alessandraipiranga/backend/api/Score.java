@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class MatchRequest {
+public class Score {
 
     @ApiModelProperty(required = true, notes = "The score of the first player")
     private Integer player1Score;
