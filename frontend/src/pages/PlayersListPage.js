@@ -5,7 +5,7 @@ import Ul from "../components/Ul";
 import {deletePlayer, getAllPlayer} from "../service/api-service";
 import {useEffect, useState} from "react";
 
-export default function PlayersListPage() {
+export default function PlayersListPage({setTournament}) {
 
     const [player, setPlayer] = useState([])
 

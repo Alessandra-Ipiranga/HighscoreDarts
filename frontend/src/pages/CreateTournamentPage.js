@@ -1,14 +1,14 @@
-import Button from "../components/Button"
-import ButtonGroup from "../components/ButtonGroup"
-import Form from "../components/Form"
+import Button from "../components/Button";
+import ButtonGroup from "../components/ButtonGroup";
+import Form from "../components/Form";
 import Header from "../components/Header";
 import Input from "../components/Input"
 import Label from "../components/Label";
 import Page from "../components/Page";
 import WarningTag from "../components/WarningTag";
 import {postTournament} from "../service/api-service";
-import {useState} from "react";
 import {useHistory} from "react-router";
+import {useState} from "react";
 
 const initialState = {
     groups: "",
@@ -23,20 +23,22 @@ export default function CreateTournamentPage(props) {
 
     const handleNumberChange = event =>
         setTournament({...tournament, [event.target.name]: event.target.value})
+
     const clear = (event) => {
         event.preventDefault()
         setTournament(initialState)
-
     }
+
     const handleSubmit = (event) => {
         event.preventDefault()
-        postTournament(tournament)
-            .then(props.setTournament)
-            .then( () => history.push("/groups"))
-            .catch(error => console.log(error))
 
+        postTournament(tournament.rounds, tournament.groups)
+            .then(props.setTournament)
+            .then(() => history.push("/groups"))
+            .catch(error => console.log(error))
     }
 
+    console.log(tournament)
     const validInput = (tournament.groups <= 20 && tournament.groups > 0) && (tournament.rounds <= 20 && tournament.rounds > 0)
     const inputInRange = (tournament.groups < 0 || tournament.groups > 20) || (tournament.rounds < 0 || tournament.rounds > 20)
 

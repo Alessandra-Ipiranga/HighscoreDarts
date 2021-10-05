@@ -7,7 +7,7 @@ import Page from "../components/Page"
 import {postPlayer} from "../service/api-service";
 import {useState} from "react";
 
-export default function PlayersPage() {
+export default function PlayersPage({tournament}) {
 
     const [name, setName] = useState('')
 
@@ -25,7 +25,7 @@ export default function PlayersPage() {
     }
 
     const handleClick = () => {
-        postPlayer({name})
+        postPlayer()
             .catch(error => console.log(error))
             .finally(() => setName(""))
     }
