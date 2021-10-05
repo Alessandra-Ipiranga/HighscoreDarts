@@ -6,6 +6,8 @@ import AddPlayersPage from "./pages/AddPlayersPage";
 import CreateTournamentPage from "./pages/CreateTournamentPage";
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import {useState} from "react";
+import MatchPage from "./pages/MatchPage";
+import WinnerPage from "./pages/WinnerPage";
 
 export default function App() {
 
@@ -36,6 +38,8 @@ export default function App() {
                         tournament={tournament}
                     />
                 </Route>
+                <Route path="/match/:tournamentId/:groupName" component = {MatchPage}/>
+                <Route path="/winner/:winnerName/:winnerScore" component = {WinnerPage}/>
             </Switch>
         </Router>
     );

@@ -19,7 +19,6 @@ export const deletePlayer = (id, player) =>
 export const postPlayer = (tournamentId, groupName, player) =>
     axios.post(`/api/HighscoreDarts/player/tournament/${tournamentId}/group/${groupName}`, player)
         .then(response => response.data)
-        .then(dto => dto.player)
 
 export const getAllPlayer = (player) =>
     axios.get("/api/HighscoreDarts/player", player)
