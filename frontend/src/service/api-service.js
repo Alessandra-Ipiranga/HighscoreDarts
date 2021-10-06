@@ -1,25 +1,41 @@
 import axios from "axios";
 
-export const getPlayer = player =>
-    axios.get(`api/HighscoreDarts/player/${player.id}`, player)
+export const addMatch = (matchId, round, match) =>
+    axios.put(`/api/HighscoreDarts/match/${matchId}/round/${round}`, match)
         .then(response => response.data)
 
-export const getAllPlayer = (player) =>
-    axios.get("api/HighscoreDarts/player", player)
+export const findPlayer = (id, player) =>
+    axios.get(`/api/HighscoreDarts/player/${player.id}`, player)
+        .then(response => response.data)
+
+export const updatePlayer = (id, player) =>
+    axios.put(`/api/HighscoreDarts/player/${player.id}`, player)
+        .then(response => response.data)
+
+export const deletePlayer = (id, player) =>
+    axios.delete(`/api/HighscoreDarts/player/${player.id}`)
         .then(response => response.data)
 
 export const postPlayer = (tournamentId, groupName, player) =>
-    axios.post(`api/HighscoreDarts/player/tournament/${tournamentId}/group/${groupName}`, player)
+    axios.post(`/api/HighscoreDarts/player/tournament/${tournamentId}/group/${groupName}`, player)
         .then(response => response.data)
 
-export const deletePlayer = (player) =>
-    axios.delete(`api/HighscoreDarts/player/${player.id}`, player)
+export const getAllPlayer = (player) =>
+    axios.get("/api/HighscoreDarts/player", player)
         .then(response => response.data)
 
-export const getTournament = (tournament) =>
-    axios.post(`api/HighscoreDarts/tournament/${tournament.id}`, null)
+export const findTournament = (tournamentId) =>
+    axios.get(`/api/HighscoreDarts/tournament/${tournamentId}`)
         .then(response => response.data)
 
-export const postTournament = (tournament) =>
-    axios.post(`api/HighscoreDarts/tournament/rounds/${tournament.rounds}/groups/${tournament.groups}`, null)
+export const startTournament = (tournamentId) =>
+    axios.put(`/api/HighscoreDarts/tournament/${tournamentId}/start`, null)
+        .then(response => response.data)
+
+export const finishTournament = (tournamentId) =>
+    axios.put(`/api/HighscoreDarts/tournament/${tournamentId}/finish`, null)
+        .then(response => response.data)
+
+export const postTournament = (tournamentRounds, tournamentGroups) =>
+    axios.post(`api/HighscoreDarts/tournament/rounds/${tournamentRounds}/groups/${tournamentGroups}`, null)
         .then(response => response.data)
