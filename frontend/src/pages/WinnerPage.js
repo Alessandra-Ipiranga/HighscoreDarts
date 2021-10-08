@@ -1,23 +1,26 @@
 import {useHistory, useParams} from "react-router";
 import styled from 'styled-components/macro'
 import Button from "../components/Button";
+import Header from "../components/Header";
 
 export default function WinnerPage() {
 
     const {winnerName, winnerScore} = useParams()
     const history = useHistory()
 
-    const handleNewGame  = () => {
+    const handleNewGame = () => {
         history.push("/")
     }
 
-    return (
-        <Page>
-            <h1>{winnerName}, you are the best!</h1>
-            <h2>Your score is {winnerScore}</h2>
-            <h2>Congrats!</h2>
-            <Button onClick={handleNewGame}>New Game</Button>
-        </Page>
+    return (<>
+            <Page>
+                <Header/>
+                <h1>{winnerName}, you are the best!</h1>
+                <h2>Your score is {winnerScore}</h2>
+                <h2>Congrats!</h2>
+                <Button onClick={handleNewGame}>New Game</Button>
+            </Page>
+        </>
     )
 }
 
@@ -34,4 +37,4 @@ const Page = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  `
+`

@@ -3,9 +3,11 @@ import {useEffect, useState} from "react";
 import {findTournament} from "../service/api-service";
 import Input from "../components/Input";
 import Page from "../components/Page";
-import styled from 'styled-components/macro'
+import styled from 'styled-components/macro';
 import Label from "../components/Label";
 import Button from "../components/Button";
+import Header from "../components/Header";
+import Form from "../components/Form";
 
 export default function MatchPage() {
 
@@ -18,7 +20,7 @@ export default function MatchPage() {
             .then(tournament => {
                 const groups = tournament.groups
                 const group = groups.find(group => group.name === groupName)
-                setPlayers(group.players.map(player => ({...player, score: 0})))
+                setPlayers(group.players.map(player => ({...player, score: null})))
             })
             .catch(console.log)
 
@@ -41,6 +43,9 @@ export default function MatchPage() {
 
     return (
         <Page>
+            <div><Header/><Form>
+
+
             <Wrapper>
                 {players && (players.map((player, index) =>
                     <Label key={player.id}>{player.name} <br/>
@@ -50,13 +55,13 @@ export default function MatchPage() {
 
             </Wrapper>
             <Button onClick={calculateWinner}>Validate Winner</Button>
+            </Form></div>
+
         </Page>
     )
 }
 
 const Wrapper = styled.div`
-  display: flex;
+  display: grid;
   flex-wrap: wrap;
-  justify-content: space-evenly;
-  align-items: center;
 `

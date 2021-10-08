@@ -1,9 +1,10 @@
 import styled from 'styled-components/macro'
+import LogoImage from '../Logo_LetsPlayDarts.webp'
 
 export default function Header() {
     return (
         <Wrapper>
-            <Logo className="logo" src="Logo_LetsPlayDarts.webp" alt="logo"/>
+            <Logo className="logo" src={LogoImage} alt="logo"/>
         </Wrapper>
     )
 }

@@ -47,14 +47,14 @@ export default function CreateTournamentPage(props) {
             <div>
                 <Header/>
                 <Form onSubmit={handleSubmit}>
-                    <Label>Bitte geben Sie die Anzahl der Gruppen ein! </Label>
+                    <Label>Bitte geben Sie die Anzahl der Runden ein! </Label>
                     <Input
                         type="number"
                         name="rounds"
                         value={tournament.rounds}
                         onChange={handleNumberChange}
                     />
-                    <Label>Bitte geben Sie die Anzahl der Runden ein! </Label>
+                    <Label>Bitte geben Sie die Anzahl der Gruppen ein! </Label>
                     <Input
                         type="number"
                         name="groups"
