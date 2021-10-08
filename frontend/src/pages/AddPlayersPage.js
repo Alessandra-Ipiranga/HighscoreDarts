@@ -6,9 +6,9 @@ import Page from "../components/Page"
 import {postPlayer} from "../service/api-service";
 import {useState} from "react";
 import ButtonGroup from "../components/ButtonGroup";
-import Header from "../components/Header";
 import {useHistory, useParams} from "react-router";
 import List from "../components/List";
+import Header from "../components/Header";
 
 export default function AddPlayersPage() {
 
@@ -36,7 +36,7 @@ export default function AddPlayersPage() {
         <Page>
             <Form onSubmit={handleSubmit}>
                 <Header/>
-                <Label>Geben Sie den Namen des Spielers ein</Label>
+                <Label>Geben Sie den Namen der Spieler ein</Label>
                 <Input
                     type="text"
                     name="player"
@@ -47,6 +47,7 @@ export default function AddPlayersPage() {
                     <Button>Player hinzufügen</Button>
                     <Button type="button" onClick = {startMatch}>start match</Button>
                 </ButtonGroup>
+                <h2>Teilnehmer</h2>
                 {playersList.length > 0 && <ol>
                 {playersList.map(player =>
                     (<List key={player.id}> {player.name}

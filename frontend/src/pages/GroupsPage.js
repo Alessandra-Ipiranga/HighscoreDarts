@@ -22,7 +22,7 @@ export default function GroupsPage({tournament}) {
     const handleSubmit = (event) => {
         event.preventDefault()
         history.push(`/addPlayers/${tournament.id}/${value}`)
-        alert('You chose group number: ' + value)
+        //alert('You chose group number: ' + value)
 
     }
 
